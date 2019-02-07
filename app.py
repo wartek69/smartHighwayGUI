@@ -1,9 +1,13 @@
+import threading
+
 from flask import Flask, render_template
 import logging
 import sys
 from CommunicationBlock import CommunicationBlock
 from flask_socketio import SocketIO
 import argparse
+
+from VehicleStatePublisher import VehicleStatePublisher
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +31,7 @@ logger = logging.getLogger(__name__)
 def main():
     configuration_path = args.configuration_path
     block = CommunicationBlock("demo_gui")
-    #todo
+    #todo setSocketIo In constructor of block
     block.setSocketio(socketio)
     block.parse_json_configuration_file(configuration_path)
 
@@ -37,4 +41,9 @@ def home():
 
 if __name__ == '__main__':
     main()
+    # only for testing
+    v = VehicleStatePublisher("vehiclestate")
+    v.parse_json_configuration_file("./testpub.json")
+    print("parsed file")
+    v.start()
     socketio.run(app)

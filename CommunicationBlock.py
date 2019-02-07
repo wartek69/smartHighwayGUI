@@ -5,6 +5,10 @@ import _thread
 from time import sleep
 from gps_protobuf.gps_pb2 import GpsData
 from dust_eebl.dust_eebl_pb2 import EEBL, EEBL_Location, EEBL_Type
+from vehicle_state import vehicle_state_pb2
+from vehicle_state.vehicle_state_pb2 import VehicleState, Type
+import vehicle_state.vehicle_state_pb2
+
 import logging
 
 from pydust.abstract_block import AbstractBlock
@@ -19,6 +23,13 @@ class CommunicationBlock(AbstractBlock):
     eebl_intern_timeout = datetime.now() - timedelta(seconds=0.25)
     eebl_extern_timeout = datetime.now() - timedelta(seconds=1)
     gps_timeout = datetime.now() - timedelta(seconds=2)
+    vehicle_state_timeout = datetime.now() - timedelta(seconds=2)
+
+    # t variables used to prevent spamming the client with timeouts -> one timeout enough
+    tintern = False;
+    textern = False;
+    tgps = False;
+    tvehiclestate = False;
 
     def setSocketio(self, socketio):
         self.socketio = socketio
@@ -33,12 +44,18 @@ class CommunicationBlock(AbstractBlock):
 
     def on_message(self, topic: str, message: DustMessage):
         """Implement on message callback."""
-        if self.eebl_intern_timeout < datetime.now() - timedelta(seconds=0.25):
+        if self.eebl_intern_timeout < datetime.now() - timedelta(seconds=0.25) and self.tintern == False:
+            self.tintern = True
             self.socketio.emit('eebl_intern', {'info': "Intern: NaN"})
-        if self.eebl_extern_timeout < datetime.now() - timedelta(seconds=1):
+        if self.eebl_extern_timeout < datetime.now() - timedelta(seconds=1) and self.textern == False:
+            self.textern = True
             self.socketio.emit('eebl_extern', {'timeout': 'true'})
-        if self.gps_timeout < datetime.now() - timedelta(seconds=2):
+        if self.gps_timeout < datetime.now() - timedelta(seconds=2) and self.tgps == False:
+            self.tgps = True
             self.socketio.emit('newgps', {'timeout': 'true'})
+        if self.vehicle_state_timeout < datetime.now() - timedelta(seconds=2) and self.tvehiclestate == False:
+            self.tvehiclestate = True
+            #TODO
 
         if topic == 'eebl_intern' or topic == 'eebl_intern_gui':
             eebl = EEBL()
@@ -61,9 +78,10 @@ class CommunicationBlock(AbstractBlock):
                 text = "Intern: SENSOR FAILURE"
                 self.socketio.emit('eebl_intern', {'info':text})
 
-
             logger.debug(text)
             self.eebl_intern_timeout = datetime.now()
+            self.tintern = False
+
 
         if topic == 'eebl_extern':
             eebl = EEBL()
@@ -79,6 +97,7 @@ class CommunicationBlock(AbstractBlock):
             # if self.eebl_extern_timeout < datetime.now() - timedelta(seconds=1):
             #     system('play --no-show-progress --null --channels 1 synth %s sine %f' % (0.25, 1000))
             self.eebl_extern_timeout = datetime.now()
+            self.textern = False
 
         if topic == 'gps':
             gps_data = GpsData()
@@ -91,6 +110,19 @@ class CommunicationBlock(AbstractBlock):
                                          'speed': gps_data.speed_value,
                                          'timeout': 'false'})
             self.gps_timeout = datetime.now()
+            self.tgps = False
+        if topic == 'vehicle_state':
+            vehicle_state = VehicleState()
+            vehicle_state.ParseFromString(message.get_payload_bytes())
+            self.socketio.emit('vehicle_state', {'type': vehicle_state.type,
+                                                 'value': vehicle_state.value,
+                                                 })
+            #convert number to enum name
+            varname = vehicle_state_pb2._TYPE.values_by_number[vehicle_state.type].name
+            print(varname)
+            logger.info("Vehicle state message arrived")
+            self.vehicle_state_timeout = datetime.now()
+            self.tvehiclestate = False
 
     def on_message_lost(self, topic, message_id):
         """Implement message lost callback."""

@@ -58,8 +58,14 @@ $(document).ready(function() {
 
      socket.on('eebl_intern', function(msg) {
         console.log("Received eebl_intern");
-        info_string = '<p>'+msg.info+'</p>';
+        info_string = '<p>' + msg.info + '</p>';
         $('#eeblintern').html(info_string);
+    });
+
+     socket.on('vehicle_state', function(msg) {
+        console.log("Received vehicle_state");
+        info_string = '<p> Type: ' + msg.type + ' Value: ' + msg.value + '</p>';
+        $('#vehicle_state').html(info_string);
     });
 
 
