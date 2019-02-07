@@ -12,28 +12,39 @@ $(document).ready(function() {
 
     //receive details from server
     socket.on('newgps', function(msg) {
-        console.log("Received gps coordinates");
-        info_string = '<p>Gps latitude: ' + msg.gps_lat.toString() + '</p>';
-        info_string = info_string + '<p>Gps longitude: ' + msg.gps_lon.toString() + '</p>'
-        info_string = info_string + '<p>Car speed: ' + msg.speed.toString() + '</p>'
-        $('#log').html(info_string);
-
+        //first remove the marker
         if (gps_marker != undefined) {
               map.removeLayer(gps_marker);
         };
+
+        if(msg.timeout === "false") {
+            console.log("Received gps coordinates");
+            info_string = '<p>Gps latitude: ' + msg.gps_lat.toString() + '</p>';
+            info_string = info_string + '<p>Gps longitude: ' + msg.gps_lon.toString() + '</p>'
+            info_string = info_string + '<p>Car speed: ' + msg.speed.toString() + '</p>'
+
         gps_marker = L.marker([msg.gps_lat, msg.gps_lon]).addTo(map);
+        } else {
+            info_string ="Location: NaN"
+        }
+        $('#log').html(info_string);
     });
 
     socket.on('eebl_extern', function(msg) {
         console.log("Received eebl_extern");
-
-        info_string = '<p>eebl_lat: ' + msg.eebl_lat.toString() + '</p>';
-        info_string = info_string + '<p>eebl_longitude: ' + msg.eebl_lon.toString() + '</p>'
-        info_string = info_string + '<p>eebl_speed: ' + msg.speed.toString() + '</p>'
+        //first remove the marker
         if (eebl_marker != undefined) {
-              map.removeLayer(eebl_marker);
+                  map.removeLayer(eebl_marker);
         };
-        eebl_marker = L.marker([msg.eebl_lat, msg.eebl_lon]).addTo(map);
+
+        if (msg.timeout === "false") {
+            info_string = '<p>eebl_lat: ' + msg.eebl_lat.toString() + '</p>';
+            info_string = info_string + '<p>eebl_longitude: ' + msg.eebl_lon.toString() + '</p>'
+            info_string = info_string + '<p>eebl_speed: ' + msg.speed.toString() + '</p>'
+            eebl_marker = L.marker([msg.eebl_lat, msg.eebl_lon]).addTo(map);
+        } else {
+            info_string = 'Extern: NaN'
+        }
         $('#eeblextern').html(info_string);
     });
 

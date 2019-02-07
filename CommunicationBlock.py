@@ -33,12 +33,12 @@ class CommunicationBlock(AbstractBlock):
 
     def on_message(self, topic: str, message: DustMessage):
         """Implement on message callback."""
-        # if self.eebl_intern_timeout < datetime.now() - timedelta(seconds=0.25):
-        #     self.var_eebl_intern.set("Intern: NaN")
-        # if self.eebl_extern_timeout < datetime.now() - timedelta(seconds=1):
-        #     self.var_eebl_extern.set("Extern: NaN")
-        # if self.gps_timeout < datetime.now() - timedelta(seconds=2):
-        #     self.var_gps.set("Own Location: Nan, NaN")
+        if self.eebl_intern_timeout < datetime.now() - timedelta(seconds=0.25):
+            self.socketio.emit('eebl_intern', {'info': "Intern: NaN"})
+        if self.eebl_extern_timeout < datetime.now() - timedelta(seconds=1):
+            self.socketio.emit('eebl_extern', {'timeout': 'true'})
+        if self.gps_timeout < datetime.now() - timedelta(seconds=2):
+            self.socketio.emit('newgps', {'timeout': 'true'})
 
         if topic == 'eebl_intern' or topic == 'eebl_intern_gui':
             eebl = EEBL()
@@ -53,8 +53,9 @@ class CommunicationBlock(AbstractBlock):
                                                                                              eebl.location.lon_value,
                                                                                              eebl.speed)
                 self.socketio.emit('eebl_intern_det', {'eebl_lat': eebl.location.lat_value,
-                                                   'eebl_lon': eebl.location.lon_value,
-                                                   'speed': eebl.speed})
+                                                       'eebl_lon': eebl.location.lon_value,
+                                                       'speed': eebl.speed,
+                                                       'timeout': 'false'})
 
             if eebl.type == EEBL_Type.Value("SENSOR_FAILURE"):
                 text = "Intern: SENSOR FAILURE"
@@ -72,7 +73,8 @@ class CommunicationBlock(AbstractBlock):
                                                                                          eebl.speed)
             self.socketio.emit('eebl_extern', {'eebl_lat': eebl.location.lat_value,
                                                'eebl_lon': eebl.location.lon_value,
-                                               'speed': eebl.speed})
+                                               'speed': eebl.speed,
+                                               'timeout': 'false'})
             logger.debug(text)
             # if self.eebl_extern_timeout < datetime.now() - timedelta(seconds=1):
             #     system('play --no-show-progress --null --channels 1 synth %s sine %f' % (0.25, 1000))
@@ -86,7 +88,8 @@ class CommunicationBlock(AbstractBlock):
                                                                                       gps_data.speed_value))
             self.socketio.emit('newgps',{'gps_lat': gps_data.lat_value,
                                          'gps_lon': gps_data.lon_value,
-                                         'speed': gps_data.speed_value})
+                                         'speed': gps_data.speed_value,
+                                         'timeout': 'false'})
             self.gps_timeout = datetime.now()
 
     def on_message_lost(self, topic, message_id):
