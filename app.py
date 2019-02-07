@@ -26,11 +26,9 @@ logger = logging.getLogger(__name__)
 
 def main():
     configuration_path = args.configuration_path
-
     block = CommunicationBlock("demo_gui")
     #todo
     block.setSocketio(socketio)
-
     block.parse_json_configuration_file(configuration_path)
 
 @app.route('/')

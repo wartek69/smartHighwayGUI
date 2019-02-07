@@ -20,18 +20,29 @@
     <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
          integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="
          crossorigin=""></script>
+    <!-- font awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.1/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+    <!-- awesome icons -->
+    <link rel="stylesheet" href={{ url_for('static', filename="css/leaflet.awesome-markers.css") }}>
+    <script src={{ url_for('static', filename="js/leaflet.awesome-markers.js") }}></script>
     <!-- own -->
     <link rel="stylesheet" href = {{ url_for('static', filename='css/style.css') }}/>
     <script type="text/javascript" src={{ url_for('static', filename='js/application.js')}}></script>
 
 </head>
 <body class="bg-light">
+    <h1 class="text-center">Smart highway</h1>
 
-    <h1>Smart highway</h1>
-    <div class="row h-100 w-100">
-        <div id="log" class="col-md-4"></div>
+    <div class="row container-fluid h-100">
+        <div class="col-md-4">
+            <div id="log" class="jumbotron">Location : NaN</div>
+            <div id="eeblextern" class="jumbotron">Extern: NaN</div>
+            <div id="eeblintern" class="jumbotron">Intern: NaN</div>
 
-        <div id="mapid"class="col-md-8"></div>
+        </div>
+        <div class="col-md-8">
+            <div id="mapid"class="container-fluid"></div>
+        </div>
     </div>
 </body>
 </html>

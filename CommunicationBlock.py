@@ -5,13 +5,16 @@ import _thread
 from time import sleep
 from gps_protobuf.gps_pb2 import GpsData
 from dust_eebl.dust_eebl_pb2 import EEBL, EEBL_Location, EEBL_Type
+import logging
 
 from pydust.abstract_block import AbstractBlock
 from pydust.dust_message import DustMessage
 
+logger = logging.getLogger(__name__)
 
 
 class CommunicationBlock(AbstractBlock):
+
     publish_topic = []
     eebl_intern_timeout = datetime.now() - timedelta(seconds=0.25)
     eebl_extern_timeout = datetime.now() - timedelta(seconds=1)
@@ -43,13 +46,22 @@ class CommunicationBlock(AbstractBlock):
             text = "Intern: NaN"
             if eebl.type == EEBL_Type.Value("OK"):
                 text = "Intern: Ok"
+                self.socketio.emit('eebl_intern', {'info':text})
+
             if eebl.type == EEBL_Type.Value("OBJECT_DETECTED"):
                 text = "Intern: OBJECT_DETECTED at {0:.4f}, {1:.4f} at speed {2:.2f}".format(eebl.location.lat_value,
                                                                                              eebl.location.lon_value,
                                                                                              eebl.speed)
+                self.socketio.emit('eebl_intern_det', {'eebl_lat': eebl.location.lat_value,
+                                                   'eebl_lon': eebl.location.lon_value,
+                                                   'speed': eebl.speed})
+
             if eebl.type == EEBL_Type.Value("SENSOR_FAILURE"):
                 text = "Intern: SENSOR FAILURE"
-            print(text)
+                self.socketio.emit('eebl_intern', {'info':text})
+
+
+            logger.debug(text)
             self.eebl_intern_timeout = datetime.now()
 
         if topic == 'eebl_extern':
@@ -58,7 +70,10 @@ class CommunicationBlock(AbstractBlock):
             text = "Intern: OBJECT_DETECTED at {0:.4f}, {1:.4f} at speed {2:.2f}".format(eebl.location.lat_value,
                                                                                          eebl.location.lon_value,
                                                                                          eebl.speed)
-            print(text)
+            self.socketio.emit('eebl_extern', {'eebl_lat': eebl.location.lat_value,
+                                               'eebl_lon': eebl.location.lon_value,
+                                               'speed': eebl.speed})
+            logger.debug(text)
             # if self.eebl_extern_timeout < datetime.now() - timedelta(seconds=1):
             #     system('play --no-show-progress --null --channels 1 synth %s sine %f' % (0.25, 1000))
             self.eebl_extern_timeout = datetime.now()
