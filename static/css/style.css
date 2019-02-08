@@ -7,10 +7,17 @@
     height: 100%;
     min-height: 400px;
 }
-
+.awesome-marker i {
+    font-size: 36px;
+    margin-top: 8px;
+}
 body {
     height: 100%;
     width: 100%;
+}
+.row {
+    margin-right: 0;
+    margin-left: 0;
 }
 .navbar-header {
     float: left;

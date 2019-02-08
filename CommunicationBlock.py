@@ -55,7 +55,7 @@ class CommunicationBlock(AbstractBlock):
             self.socketio.emit('newgps', {'timeout': 'true'})
         if self.vehicle_state_timeout < datetime.now() - timedelta(seconds=2) and self.tvehiclestate == False:
             self.tvehiclestate = True
-            #TODO
+            self.socketio.emit('vehicle_state', {'timeout': 'true'})
 
         if topic == 'eebl_intern' or topic == 'eebl_intern_gui':
             eebl = EEBL()
@@ -120,7 +120,7 @@ class CommunicationBlock(AbstractBlock):
             logger.debug(varname)
             self.socketio.emit('vehicle_state', {'type': varname,
                                                  'value': vehicle_state.value,
-                                                 })
+                                                 'timeout': 'false'})
 
             self.vehicle_state_timeout = datetime.now()
             self.tvehiclestate = False

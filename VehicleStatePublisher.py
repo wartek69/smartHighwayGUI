@@ -20,8 +20,10 @@ class VehicleStatePublisher(AbstractBlock, Thread):
         pass
 
     def run(self):
-        # create vehicle state message
-        while(True):
+        # create vehicle state message using mock data
+        i = 0;
+        while(i < 20):
+            i+=1
             vehicle_state_message = VehicleState()
             vehicle_state_message.type = random.randint(0,13)
             vehicle_state_message.value = random.randint(0,100)
@@ -29,4 +31,15 @@ class VehicleStatePublisher(AbstractBlock, Thread):
             self.publish(self.publish_topic, dust_message)
             logger.info("Published message on vehicle_state")
             sleep(1)
+        sleep(10)
+        while(True):
+            i += 1
+            vehicle_state_message = VehicleState()
+            vehicle_state_message.type = random.randint(0, 13)
+            vehicle_state_message.value = random.randint(0, 100)
+            dust_message = DustMessage(self.publish_topic, 0, vehicle_state_message.SerializeToString())
+            self.publish(self.publish_topic, dust_message)
+            logger.info("Published message on vehicle_state")
+            sleep(1)
+
 
