@@ -112,15 +112,16 @@ class CommunicationBlock(AbstractBlock):
             self.gps_timeout = datetime.now()
             self.tgps = False
         if topic == 'vehicle_state':
+            logger.info("Vehicle state message arrived")
             vehicle_state = VehicleState()
             vehicle_state.ParseFromString(message.get_payload_bytes())
-            self.socketio.emit('vehicle_state', {'type': vehicle_state.type,
+            # convert number to enum name
+            varname = vehicle_state_pb2._TYPE.values_by_number[vehicle_state.type].name
+            logger.debug(varname)
+            self.socketio.emit('vehicle_state', {'type': varname,
                                                  'value': vehicle_state.value,
                                                  })
-            #convert number to enum name
-            varname = vehicle_state_pb2._TYPE.values_by_number[vehicle_state.type].name
-            print(varname)
-            logger.info("Vehicle state message arrived")
+
             self.vehicle_state_timeout = datetime.now()
             self.tvehiclestate = False
 

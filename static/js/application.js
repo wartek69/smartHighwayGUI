@@ -1,7 +1,7 @@
 $(document).ready(function() {
      var gps_marker = undefined;
      var eebl_marker = undefined;
-
+     var tableElements = [];
      //TODO fix the use of own icons
      var carIcon = L.AwesomeMarkers.icon({
         icon: 'fa-car-side'
@@ -64,8 +64,21 @@ $(document).ready(function() {
 
      socket.on('vehicle_state', function(msg) {
         console.log("Received vehicle_state");
-        info_string = '<p> Type: ' + msg.type + ' Value: ' + msg.value + '</p>';
-        $('#vehicle_state').html(info_string);
+        var table = document.getElementById("vehicle_state");
+        //create a dynamic table that adds new keys and updates old values
+        if(!(tableElements.includes(msg.type))) {
+            var row = table.insertRow(0);
+            var cell1 = row.insertCell(0);
+            cell1.innerHTML = msg.type;
+            var cell2 = row.insertCell(1);
+            cell2.id = msg.type;
+            cell2.innerHTML = msg.value;
+            tableElements.push(msg.type);
+        } else {
+            var tempCell = document.getElementById(msg.type);
+            tempCell.innerHTML = msg.value;
+        }
+
     });
 
 

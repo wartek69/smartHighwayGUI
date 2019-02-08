@@ -1,7 +1,23 @@
-#mapid {
-    height: 90%;
+@media only screen and (max-width: 350px) {
+  body {
+    font-size:0.8rem;  }
 }
-html, body {
+
+#mapid {
+    height: 100%;
+    min-height: 400px;
+}
+
+body {
     height: 100%;
     width: 100%;
 }
+.navbar-header {
+    float: left;
+    text-align: center;
+    width: 100%;
+}
+.navbar-brand {float:none;}
+
+
+
