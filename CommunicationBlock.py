@@ -31,6 +31,10 @@ class CommunicationBlock(AbstractBlock):
     tgps = False;
     tvehiclestate = False;
 
+    def __init__(self, name, socketio):
+        AbstractBlock.__init__(self, name)
+        self.socketio = socketio
+
     def setSocketio(self, socketio):
         self.socketio = socketio
 

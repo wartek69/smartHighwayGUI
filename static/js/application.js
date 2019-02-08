@@ -4,6 +4,7 @@ $(document).ready(function() {
      var tableElements = [];
      var zoom = 17;
      var firstMsg = true;
+     var stopicontimeout = 5000;
 
      //icon names are from the font awesome website!
      var carIcon = L.AwesomeMarkers.icon({
@@ -81,16 +82,15 @@ $(document).ready(function() {
 
     socket.on('eebl_extern', function(msg) {
         console.log("Received eebl_extern");
-        //first remove the marker
-        if (eebl_marker != undefined) {
-                  map.removeLayer(eebl_marker);
-        };
-
         if (msg.timeout === "false") {
             info_string = '<p>eebl_lat: ' + msg.eebl_lat.toString() + '</p>';
             info_string = info_string + '<p>eebl_longitude: ' + msg.eebl_lon.toString() + '</p>'
             info_string = info_string + '<p>eebl_speed: ' + msg.speed.toString() + '</p>'
-            eebl_marker = L.marker([msg.eebl_lat, msg.eebl_lon], {icon: stopIcon}).addTo(map);
+            var eebl_markerr = L.marker([msg.eebl_lat, msg.eebl_lon], {icon: stopIcon}).addTo(map)
+                .bindPopup('\nlon: ' + msg.eebl_lon + ' \nlat: ' + msg.eebl_lon + '\nspeed: ' + msg.speed );
+            setTimeout(function() {
+                map.removeLayer(eebl_markerr);
+            }, stopicontimeout);
         } else {
             info_string = 'Extern: NaN'
         }

@@ -1,0 +1,12 @@
+{
+ "vehiclestate": {
+   "publishers": {
+     "vehicle_state": {
+       "communication":"ZeroMQ",
+       "host": "tcp://0.0.0.0:6969",
+       "topic": "vehicle_state",
+       "host_server": true
+     }
+   }
+ }
+}
