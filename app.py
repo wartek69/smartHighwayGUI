@@ -18,6 +18,8 @@ parser.add_argument("-C", "--configuration-path", help="Database name",
                     default="./config.json")
 parser.add_argument("--verbose", help="Run in verbose mode",
                     action="store_true")
+parser.add_argument("--mock", help="mock data of external eebl and vehicle state",
+                    action="store_true")
 args = parser.parse_args()
 
 if args.verbose:
@@ -39,11 +41,12 @@ def home():
 
 if __name__ == '__main__':
     main()
-    # only for testing
-    v = VehicleStatePublisher("vehiclestate")
-    v.parse_json_configuration_file("./testpub.json")
-    v.start()
-    e = ExternEeblPublisher("eebl_publisher")
-    e.parse_json_configuration_file("./externpub.json")
-    e.start()
+    if(args.mock) :
+        # only for testing
+        v = VehicleStatePublisher("vehiclestate")
+        v.parse_json_configuration_file("./testpub.json")
+        v.start()
+        e = ExternEeblPublisher("eebl_publisher")
+        e.parse_json_configuration_file("./externpub.json")
+        e.start()
     socketio.run(app)

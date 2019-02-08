@@ -51,6 +51,10 @@ $(document).ready(function() {
     //connect to the socket server.
     var socket = io.connect('http://' + document.domain + ':' + location.port);
 
+    socket.on('reconnecting', function reconnectCallback(tries) {
+        console.log('reconnecting');
+        alert("Lost connection to the server, reconnecting...");
+    });
     //receive details from server
     socket.on('newgps', function(msg) {
         //first remove the marker
@@ -134,7 +138,7 @@ $(document).ready(function() {
                 tempCell.innerHTML = msg.value;
             }
         } else {
-            //noitfy that a timeout happened
+            //show user that a timeout happened
             $("table").addClass("bg-danger");
         }
 

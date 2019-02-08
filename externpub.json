@@ -1,0 +1,12 @@
+{
+ "eebl_publisher": {
+   "publishers": {
+     "eebl_extern": {
+       "communication":"ZeroMQ",
+       "host": "tcp://0.0.0.0:5556",
+       "topic": "eebl_extern",
+       "host_server": true
+     }
+   }
+ }
+}
