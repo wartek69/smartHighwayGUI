@@ -49,4 +49,4 @@ if __name__ == '__main__':
         e = ExternEeblPublisher("eebl_publisher")
         e.parse_json_configuration_file("./externpub.json")
         e.start()
-    socketio.run(app)
+    socketio.run(app, host= '0.0.0.0')
