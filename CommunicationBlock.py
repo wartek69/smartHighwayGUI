@@ -16,7 +16,7 @@ from pydust.dust_message import DustMessage
 
 logger = logging.getLogger(__name__)
 
-
+# block used to communicate with the dust framework and represent the data in a web app
 class CommunicationBlock(AbstractBlock):
 
     publish_topic = []
@@ -119,7 +119,7 @@ class CommunicationBlock(AbstractBlock):
             logger.info("Vehicle state message arrived")
             vehicle_state = VehicleState()
             vehicle_state.ParseFromString(message.get_payload_bytes())
-            # convert number to enum name
+            # convert number to enum namesl
             varname = vehicle_state_pb2._TYPE.values_by_number[vehicle_state.type].name
             logger.debug(varname)
             self.socketio.emit('vehicle_state', {'type': varname,

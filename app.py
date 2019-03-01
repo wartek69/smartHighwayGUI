@@ -2,13 +2,19 @@
 from flask import Flask, render_template
 import logging
 from CommunicationBlock import CommunicationBlock
+from __version__ import VERSION
 from flask_socketio import SocketIO
 import argparse
 from ExternEeblPublisher import ExternEeblPublisher
+from packaging import version
+import sys
 
 from VehicleStatePublisher import VehicleStatePublisher
 
 logger = logging.getLogger(__name__)
+if version.parse(VERSION) < version.parse("1.0.0"):
+    logger.error("Project outdated, update version!")
+    sys.exit(-1)
 
 app = Flask(__name__)
 socketio = SocketIO(app)
