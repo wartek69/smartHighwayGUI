@@ -122,8 +122,8 @@ $(document).ready(function() {
 
         if(msg.timeout === 'false') {
 
-            if($("table").hasClass("bg-danger")) {
-                $("table").removeClass("bg-danger")
+            if($("#"+msg.type).parent().hasClass("bg-danger")) {
+                $("#"+msg.type).parent().removeClass("bg-danger")
             }
             var table = document.getElementById("vehicle_state");
             //create a dynamic table that adds new keys and updates old values
@@ -141,12 +141,7 @@ $(document).ready(function() {
             }
         } else {
             //show user that a timeout happened
-            $("table").addClass("bg-danger");
+            $("#"+msg.type).parent().addClass("bg-danger");
         }
-
-
     });
-
-
-
 });

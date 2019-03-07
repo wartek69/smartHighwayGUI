@@ -1,3 +1,4 @@
+from collections import namedtuple
 from os import system
 from datetime import datetime, timedelta
 from calendar import timegm
@@ -23,13 +24,16 @@ class CommunicationBlock(AbstractBlock):
     eebl_intern_timeout = datetime.now() - timedelta(seconds=0.25)
     eebl_extern_timeout = datetime.now() - timedelta(seconds=1)
     gps_timeout = datetime.now() - timedelta(seconds=2)
-    vehicle_state_timeout = datetime.now() - timedelta(seconds=2)
 
     # t variables used to prevent spamming the client with timeouts -> one timeout enough
     tintern = False;
     textern = False;
     tgps = False;
     tvehiclestate = False;
+
+    # list of vehicle state timeouts
+    vehicle_state_timeouts = {}
+    VehicleStateTimeout = namedtuple('VehicleStateTimeout', 'timeout last_update')
 
     def __init__(self, name, socketio):
         AbstractBlock.__init__(self, name)
@@ -57,9 +61,13 @@ class CommunicationBlock(AbstractBlock):
         if self.gps_timeout < datetime.now() - timedelta(seconds=2) and self.tgps == False:
             self.tgps = True
             self.socketio.emit('newgps', {'timeout': 'true'})
-        if self.vehicle_state_timeout < datetime.now() - timedelta(seconds=2) and self.tvehiclestate == False:
-            self.tvehiclestate = True
-            self.socketio.emit('vehicle_state', {'timeout': 'true'})
+
+        for state_type, vehicle_state_timeout in self.vehicle_state_timeouts.items():
+            if vehicle_state_timeout.last_update < datetime.now() - timedelta(seconds=2) and vehicle_state_timeout.timeout == False:
+                self.vehicle_state_timeouts[state_type] = self.VehicleStateTimeout(True, vehicle_state_timeout.last_update)
+                self.socketio.emit('vehicle_state', {'type': state_type,
+                                                     'timeout': 'true'})
+
 
         if topic == 'eebl_intern' or topic == 'eebl_intern_gui':
             eebl = EEBL()
@@ -85,7 +93,6 @@ class CommunicationBlock(AbstractBlock):
             logger.debug(text)
             self.eebl_intern_timeout = datetime.now()
             self.tintern = False
-
 
         if topic == 'eebl_extern':
             eebl = EEBL()
@@ -119,15 +126,14 @@ class CommunicationBlock(AbstractBlock):
             logger.info("Vehicle state message arrived")
             vehicle_state = VehicleState()
             vehicle_state.ParseFromString(message.get_payload_bytes())
-            # convert number to enum namesl
+            # convert number to enum names
             varname = vehicle_state_pb2._TYPE.values_by_number[vehicle_state.type].name
             logger.debug(varname)
             self.socketio.emit('vehicle_state', {'type': varname,
                                                  'value': vehicle_state.value,
                                                  'timeout': 'false'})
+            self.vehicle_state_timeouts[varname] = self.VehicleStateTimeout(False, datetime.now())
 
-            self.vehicle_state_timeout = datetime.now()
-            self.tvehiclestate = False
 
     def on_message_lost(self, topic, message_id):
         """Implement message lost callback."""
