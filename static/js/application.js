@@ -96,7 +96,9 @@ $(document).ready(function() {
                 map.removeLayer(eebl_markerr);
             }, stopicontimeout);
         } else {
-            info_string = 'Extern: NaN'
+            info_string = '<p>eebl_lat: NaN</p>\n' +
+                ' <p>eebl_longitude: NaN</p>\n' +
+                ' <p>eebl_speed: NaN</p>'
         }
         $('#eeblextern').html(info_string);
     });
