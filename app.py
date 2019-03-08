@@ -40,10 +40,15 @@ def main():
     block = CommunicationBlock("demo_gui", socketio)
 
     block.parse_json_configuration_file(configuration_path)
+@app.route('/console')
+def console():
+    return render_template("console.html")
 
 @app.route('/')
 def home():
     return render_template("home.html")
+
+
 
 if __name__ == '__main__':
     main()
