@@ -18,17 +18,20 @@ $(document).ready(function() {
             }
             var table = document.getElementById("can_messages");
             //create a dynamic table that adds new keys and updates old values
+            var value = "0".repeat(16 - msg.value.length) + msg.value
+            value = value.replace(/(.{2})/g, '$1 ').toUpperCase();
+
             if(!(tableElements.includes(msg.id))) {
-                var row = table.insertRow(0);
+                var row = table.insertRow(-1);
                 var cell1 = row.insertCell(0);
                 cell1.innerHTML = msg.id;
                 var cell2 = row.insertCell(1);
                 cell2.id = msg.id;
-                cell2.innerHTML = msg.value;
+                cell2.innerHTML = value;
                 tableElements.push(msg.id);
             } else {
                 var tempCell = document.getElementById(msg.id);
-                tempCell.innerHTML = msg.value;
+                tempCell.innerHTML = value;
             }
         } else {
             //show user that a timeout happened

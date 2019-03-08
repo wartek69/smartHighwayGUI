@@ -141,7 +141,7 @@ class CommunicationBlock(AbstractBlock):
             test = can_message.data.hex()
             print(test)
             self.socketio.emit('can_messages', {'id': can_message.id,
-                                                'value': can_message.data,
+                                                'value': can_message.data.hex(),
                                                 'timeout': 'false'})
 
 

@@ -28,7 +28,7 @@ class CanMessagePublisher(AbstractBlock, Thread):
             i+=1
             can_message = CanData()
             can_message.id = random.randint(0,30)
-            can_message.data = b'100011110001010'
+            can_message.data = b'\n\n'
             dust_message = DustMessage(self.publish_topic, 0, can_message.SerializeToString())
             self.publish(self.publish_topic, dust_message)
             logger.info("Published message on can_messages")
