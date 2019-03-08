@@ -2,14 +2,15 @@
 from flask import Flask, render_template
 import logging
 from CommunicationBlock import CommunicationBlock
+from Mocking.CanMessagePublisher import CanMessagePublisher
 from __version__ import VERSION
 from flask_socketio import SocketIO
 import argparse
-from ExternEeblPublisher import ExternEeblPublisher
+from Mocking.ExternEeblPublisher import ExternEeblPublisher
 from packaging import version
 import sys
 
-from VehicleStatePublisher import VehicleStatePublisher
+from Mocking.VehicleStatePublisher import VehicleStatePublisher
 
 logger = logging.getLogger(__name__)
 if version.parse(VERSION) < version.parse("1.0.0"):
@@ -38,8 +39,9 @@ logger = logging.getLogger(__name__)
 def main():
     configuration_path = args.configuration_path
     block = CommunicationBlock("demo_gui", socketio)
-
     block.parse_json_configuration_file(configuration_path)
+
+
 @app.route('/console')
 def console():
     return render_template("console.html")
@@ -52,12 +54,16 @@ def home():
 
 if __name__ == '__main__':
     main()
-    if(args.mock) :
+    c = CanMessagePublisher("can_message_publisher")
+    c.parse_json_configuration_file("Mocking/config/canmessagepub.json")
+    c.start()
+    if args.mock :
         # only for testing
-        v = VehicleStatePublisher("vehiclestate")
-        v.parse_json_configuration_file("./testpub.json")
+        v = VehicleStatePublisher("vehicle_state_publisher")
+        v.parse_json_configuration_file("Mocking/config/vehiclestatepub.json")
         v.start()
+
         e = ExternEeblPublisher("eebl_publisher")
-        e.parse_json_configuration_file("./externpub.json")
+        e.parse_json_configuration_file("Mocking/config/externpub.json")
         e.start()
     socketio.run(app)

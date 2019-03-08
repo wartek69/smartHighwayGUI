@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 {% set active_page = "console" %}
+{% block includes %}
+    <!-- own -->
+    <script type="text/javascript" src={{ url_for('static', filename='js/id_handler.js')}}></script>
+{% endblock %}
+
 {% block content %}
     <div class="row px-2 h-100">
-        <p>console</p>
+        <table id="can_messages" class="table table-striped"></table>
     </div>
 {% endblock %}

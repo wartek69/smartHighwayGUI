@@ -1,0 +1,12 @@
+{
+  "can_message_publisher": {
+    "publishers": {
+      "can_messages": {
+        "communication": "ZeroMQ",
+        "host": "tcp://0.0.0.0:1337",
+        "topic": "can_messages",
+        "host_server": true
+      }
+    }
+  }
+}

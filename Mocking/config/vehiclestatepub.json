@@ -1,5 +1,5 @@
 {
- "vehiclestate": {
+ "vehicle_state_publisher": {
    "publishers": {
      "vehicle_state": {
        "communication":"ZeroMQ",
@@ -10,3 +10,4 @@
    }
  }
 }
+

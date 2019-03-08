@@ -8,6 +8,7 @@ from gps_protobuf.gps_pb2 import GpsData
 from dust_eebl.dust_eebl_pb2 import EEBL, EEBL_Location, EEBL_Type
 from vehicle_state import vehicle_state_pb2
 from vehicle_state.vehicle_state_pb2 import VehicleState, Type
+from can_protobuf.can_pb2 import CanData
 import vehicle_state.vehicle_state_pb2
 
 import logging
@@ -133,6 +134,16 @@ class CommunicationBlock(AbstractBlock):
                                                  'value': vehicle_state.value,
                                                  'timeout': 'false'})
             self.vehicle_state_timeouts[varname] = self.VehicleStateTimeout(False, datetime.now())
+        if topic =='can_messages':
+            logger.info("Can message arrived!")
+            can_message = CanData()
+            can_message.ParseFromString(message.get_payload_bytes())
+            test = can_message.data.hex()
+            print(test)
+            self.socketio.emit('can_messages', {'id': can_message.id,
+                                                'value': can_message.data,
+                                                'timeout': 'false'})
+
 
 
     def on_message_lost(self, topic, message_id):
