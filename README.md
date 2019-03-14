@@ -18,3 +18,5 @@ Data of vehicle state and external eebl can be mocked by running. (Use the exter
 ```
 python3 app.py --mock
 ```
+# Problems
+If you are getting segmentation faults, check that you are using the latest proto messages! (vehicle_state, can_message, ...)
