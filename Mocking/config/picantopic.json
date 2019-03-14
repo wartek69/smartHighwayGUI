@@ -1,0 +1,12 @@
+{
+  "pi_can_publisher": {
+    "publishers": {
+      "piCanTopic": {
+        "communication": "ZeroMQ",
+        "host_server": true,
+        "host": "tcp://0.0.0.0:9696",
+        "topic": "piCanTopic"
+      }
+    }
+  }
+}

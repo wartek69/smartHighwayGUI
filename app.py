@@ -3,6 +3,7 @@ from flask import Flask, render_template
 import logging
 from CommunicationBlock import CommunicationBlock
 from Mocking.CanMessagePublisher import CanMessagePublisher
+from Mocking.PiCanTopicPublisher import PiCanTopicPublisher
 from __version__ import VERSION
 from flask_socketio import SocketIO
 import argparse
@@ -54,16 +55,21 @@ def home():
 
 if __name__ == '__main__':
     main()
-    c = CanMessagePublisher("can_message_publisher")
-    c.parse_json_configuration_file("Mocking/config/canmessagepub.json")
-    c.start()
     if args.mock :
         # only for testing
-        v = VehicleStatePublisher("vehicle_state_publisher")
-        v.parse_json_configuration_file("Mocking/config/vehiclestatepub.json")
-        v.start()
+        # v = VehicleStatePublisher("vehicle_state_publisher")
+        # v.parse_json_configuration_file("Mocking/config/vehiclestatepub.json")
+        # v.start()
 
         e = ExternEeblPublisher("eebl_publisher")
         e.parse_json_configuration_file("Mocking/config/externpub.json")
         e.start()
+
+        # c = CanMessagePublisher("can_message_publisher")
+        # c.parse_json_configuration_file("Mocking/config/canmessagepub.json")
+        # c.start()
+
+        p = PiCanTopicPublisher("pi_can_publisher")
+        p.parse_json_configuration_file("Mocking/config/picantopic.json")
+        p.start()
     socketio.run(app)

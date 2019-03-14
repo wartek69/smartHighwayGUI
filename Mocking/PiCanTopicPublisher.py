@@ -11,8 +11,8 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class CanMessagePublisher(AbstractBlock, Thread):
-    publish_topic = "can_messages"
+class PiCanTopicPublisher(AbstractBlock, Thread):
+    publish_topic = "piCanTopic"
 
     def __init__(self, name):
         AbstractBlock.__init__(self, name)
@@ -22,16 +22,15 @@ class CanMessagePublisher(AbstractBlock, Thread):
         pass
 
     def run(self):
-        # create vehicle state message using mock data
         i = 0;
-        while(True):
-            i+=1
+        while (True):
+            i += 1
             can_message = CanData()
-            can_message.id = random.randint(0,30)
-            can_message.data = b'\n\n'
+            can_message.id = 239
+            can_message.data = b'\na'
             dust_message = DustMessage(self.publish_topic, 0, can_message.SerializeToString())
             self.publish(self.publish_topic, dust_message)
-            logger.info("Published message on can_messages")
+            logger.info("Published message on PiCanTopic")
             sleep(1)
 
 
