@@ -24,14 +24,20 @@ class PiCanTopicPublisher(AbstractBlock, Thread):
     def run(self):
         i = 0;
         while (True):
-            i += 1
             can_message = CanData()
             can_message.id = 239
-            can_message.data = b'\na'
+            can_message.data = b'\nabcdegh'
             dust_message = DustMessage(self.publish_topic, 0, can_message.SerializeToString())
             self.publish(self.publish_topic, dust_message)
             logger.info("Published message on PiCanTopic")
             sleep(1)
+            can_message = CanData()
+            can_message.id = 580
+            can_message.data = b'\neghabcd'
+            dust_message = DustMessage(self.publish_topic, 0, can_message.SerializeToString())
+            self.publish(self.publish_topic, dust_message)
+            logger.info("Published message on PiCanTopic")
+            sleep(5)
 
 
 

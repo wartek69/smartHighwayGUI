@@ -36,6 +36,10 @@ class CommunicationBlock(AbstractBlock):
     vehicle_state_timeouts = {}
     VehicleStateTimeout = namedtuple('VehicleStateTimeout', 'timeout last_update')
 
+    # list of canmessage timeouts
+    can_messages_timeouts = {}
+    CanMessagesTimeout = namedtuple('CanStateTimeout', 'timeout last_update')
+
     def __init__(self, name, socketio):
         AbstractBlock.__init__(self, name)
         self.socketio = socketio
@@ -51,8 +55,7 @@ class CommunicationBlock(AbstractBlock):
     def configure_block(self, configuration):
         _thread.start_new_thread(self.timeout_check, ())
 
-    def on_message(self, topic: str, message: DustMessage):
-        """Implement on message callback."""
+    def check_time_outs(self):
         if self.eebl_intern_timeout < datetime.now() - timedelta(seconds=0.25) and self.tintern == False:
             self.tintern = True
             self.socketio.emit('eebl_intern', {'info': "Intern: NaN"})
@@ -63,12 +66,23 @@ class CommunicationBlock(AbstractBlock):
             self.tgps = True
             self.socketio.emit('newgps', {'timeout': 'true'})
 
-        for state_type, vehicle_state_timeout in self.vehicle_state_timeouts.items():
-            if vehicle_state_timeout.last_update < datetime.now() - timedelta(seconds=2) and vehicle_state_timeout.timeout == False:
-                self.vehicle_state_timeouts[state_type] = self.VehicleStateTimeout(True, vehicle_state_timeout.last_update)
+        for state_type, vehicle_state_timeout in list(self.vehicle_state_timeouts.items()):
+            if vehicle_state_timeout.last_update < datetime.now() - timedelta(
+                    seconds=2) and vehicle_state_timeout.timeout == False:
+                del self.vehicle_state_timeouts[state_type]
                 self.socketio.emit('vehicle_state', {'type': state_type,
                                                      'timeout': 'true'})
 
+        for can_message_id, can_message_timeout in list(self.can_messages_timeouts.items()):
+            if can_message_timeout.last_update < datetime.now() - timedelta(seconds=2) and can_message_timeout.timeout == False:
+                del self.can_messages_timeouts[can_message_id]
+                self.socketio.emit('can_messages', {'id': can_message_id,
+                                                     'timeout': 'true'})
+
+    def on_message(self, topic: str, message: DustMessage):
+        """Implement on message callback."""
+
+        self.check_time_outs()
 
         if topic == 'eebl_intern' or topic == 'eebl_intern_gui':
             eebl = EEBL()
@@ -138,11 +152,12 @@ class CommunicationBlock(AbstractBlock):
             logger.info("Can message arrived!")
             can_message = CanData()
             can_message.ParseFromString(message.get_payload_bytes())
-            test = can_message.data.hex()
-            print(test)
+            logger.debug(can_message.data.hex())
             self.socketio.emit('can_messages', {'id': can_message.id,
                                                 'value': can_message.data.hex(),
                                                 'timeout': 'false'})
+            self.can_messages_timeouts[can_message.id] = self.CanMessagesTimeout(False, datetime.now())
+
 
 
 
