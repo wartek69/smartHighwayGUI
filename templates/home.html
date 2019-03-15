@@ -13,21 +13,34 @@
     <!-- awesome icons -->
     <link rel="stylesheet" href={{ url_for('static', filename="css/leaflet.awesome-markers.css") }}>
     <script src={{ url_for('static', filename="js/leaflet.awesome-markers.js") }}></script>
-    <!-- own -->
-    <script type="text/javascript" src={{ url_for('static', filename='js/application.js')}}></script>
+        <!-- own -->
+        <script type="text/javascript" src={{ url_for('static', filename='js/application.js')}}></script>
     <link rel="stylesheet" href = {{ url_for('static', filename='css/style.css') }}/>
 
 {% endblock %}
 {% block content %}
     <div class="row px-2 h-100">
         <div class="col-lg-3">
-            <div id="log" class="jumbotron">Location : NaN</div>
-            <div id="eeblextern" class="jumbotron">
-                <p>eebl_lat: NaN</p>
-                <p>eebl_longitude: NaN</p>
-                <p>eebl_speed: NaN</p>
+            <div class="jumbotron">
+                <div id="log">
+                    <h3>Gps data</h3>
+                    <p>Location : NaN</p>
+                </div>
             </div>
-            <div id="eeblintern" class="jumbotron">Intern: NaN</div>
+            <div class="jumbotron">
+                <h3>Extern event</h3>
+                <div id ="eeblextern">
+                    <p>eebl_lat: NaN</p>
+                    <p>eebl_longitude: NaN</p>
+                    <p>eebl_speed: NaN</p>
+                </div>
+            </div>
+            <div class="jumbotron">
+                <div id="eeblintern">
+                    <h3>Intern event</h3>
+                    <p>Intern: NaN</p>
+                </div>
+            </div>
         </div>
         <div class="col-lg-3">
             <table id="vehicle_state" class="table table-striped"></table>

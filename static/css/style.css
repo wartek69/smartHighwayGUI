@@ -24,3 +24,7 @@ body {
     float: right;
 }
 
+.jumbotron {
+    padding-top: 2rem;
+}
+
