@@ -10,6 +10,8 @@ from vehicle_state import vehicle_state_pb2
 from vehicle_state.vehicle_state_pb2 import VehicleState, Type
 from can_protobuf.can_pb2 import CanData
 import vehicle_state.vehicle_state_pb2
+import sys
+from threading import Lock
 
 import logging
 
@@ -20,7 +22,7 @@ logger = logging.getLogger(__name__)
 
 # block used to communicate with the dust framework and represent the data in a web app
 class CommunicationBlock(AbstractBlock):
-
+    lock = Lock()
     publish_topic = []
     eebl_intern_timeout = datetime.now() - timedelta(seconds=0.25)
     eebl_extern_timeout = datetime.now() - timedelta(seconds=1)
@@ -56,6 +58,9 @@ class CommunicationBlock(AbstractBlock):
         _thread.start_new_thread(self.timeout_check, ())
 
     def check_time_outs(self):
+        logger.debug("entered check_time_outs")
+        #lock neccessary because different instances of
+        self.lock.acquire()
         if self.eebl_intern_timeout < datetime.now() - timedelta(seconds=0.25) and self.tintern == False:
             self.tintern = True
             self.socketio.emit('eebl_intern', {'info': "Intern: NaN"})
@@ -69,19 +74,26 @@ class CommunicationBlock(AbstractBlock):
         for state_type, vehicle_state_timeout in list(self.vehicle_state_timeouts.items()):
             if vehicle_state_timeout.last_update < datetime.now() - timedelta(
                     seconds=2) and vehicle_state_timeout.timeout == False:
+                logger.debug("about to delete vehicle timeout")
                 del self.vehicle_state_timeouts[state_type]
+                logger.debug("deleted vehicle timeout")
+
                 self.socketio.emit('vehicle_state', {'type': state_type,
                                                      'timeout': 'true'})
 
         for can_message_id, can_message_timeout in list(self.can_messages_timeouts.items()):
             if can_message_timeout.last_update < datetime.now() - timedelta(seconds=2) and can_message_timeout.timeout == False:
+                logger.debug("about to delete can messages timeout")
                 del self.can_messages_timeouts[can_message_id]
+                logger.debug("deleted can messages timeout")
+
                 self.socketio.emit('can_messages', {'id': can_message_id,
                                                      'timeout': 'true'})
+        self.lock.release()
 
     def on_message(self, topic: str, message: DustMessage):
         """Implement on message callback."""
-
+        logger.debug("entered on message")
         self.check_time_outs()
 
         if topic == 'eebl_intern' or topic == 'eebl_intern_gui':
@@ -126,6 +138,7 @@ class CommunicationBlock(AbstractBlock):
             self.textern = False
 
         if topic == 'gps':
+            logger.debug("entered gps topic")
             gps_data = GpsData()
             gps_data.ParseFromString(message.get_payload_bytes())
             print("Own Location: {0:.8f}, {1:.8f} at speed {2:.4f}".format(gps_data.lat_value,
@@ -140,7 +153,10 @@ class CommunicationBlock(AbstractBlock):
         if topic == 'vehicle_state':
             logger.info("Vehicle state message arrived")
             vehicle_state = VehicleState()
+            logger.debug("Made vehicle_state object")
             vehicle_state.ParseFromString(message.get_payload_bytes())
+            logger.debug(vehicle_state.type)
+
             # convert number to enum names
             varname = vehicle_state_pb2._TYPE.values_by_number[vehicle_state.type].name
             logger.debug(varname)
@@ -148,6 +164,8 @@ class CommunicationBlock(AbstractBlock):
                                                  'value': vehicle_state.value,
                                                  'timeout': 'false'})
             self.vehicle_state_timeouts[varname] = self.VehicleStateTimeout(False, datetime.now())
+            logger.debug("left vehicle_state")
+
         if topic =='can_messages':
             logger.info("Can message arrived!")
             can_message = CanData()
@@ -163,4 +181,5 @@ class CommunicationBlock(AbstractBlock):
 
     def on_message_lost(self, topic, message_id):
         """Implement message lost callback."""
+        logger.debug("lost message")
         pass
