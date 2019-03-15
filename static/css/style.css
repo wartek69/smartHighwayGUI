@@ -19,12 +19,8 @@ body {
     margin-right: 0;
     margin-left: 0;
 }
-.navbar-header {
-    float: left;
-    text-align: center;
-    width: 100%;
+
+.navbar-toggler {
+    float: right;
 }
-.navbar-brand {float:none;}
-
-
 

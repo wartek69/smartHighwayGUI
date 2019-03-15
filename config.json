@@ -1,406 +1,211 @@
 {
-
   "gps": {
-
     "publishers": {
-
       "gps": {
-
         "communication": "ZeroMQ",
-
         "host": "tcp://0.0.0.0:5553",
-
         "topic": "gps",
-
         "host_server": true
-
       }
-
     }
-
   },
-
   "vlp16": {
-
     "x_offset": 0,
-
     "y_offset": -2,
-
     "z_offset": 1.9,
-
     "publishers": {
-
       "velodyne_points": {
-
         "communication": "ZeroMQ",
-
         "host": "tcp://0.0.0.0:5554",
-
         "topic": "pointcloud",
-
         "host_server": true,
-
         "batch_size": 1
-
       }
-
     }
-
   },
-
   "processor": {
-
     "block": "processor",
-
     "pointcloud": "pointcloud",
-
     "gps": "gps",
-
     "eebl": "eebl_intern",
-
     "eebl_gui": "eebl_intern_gui",
-
     "debug": true,
-
     "warnings": true,
-
     "one_shot_eebl": true,
-
     "points_correction": true,
-
     "x_offset": 0,
-
     "x_max": 1.0,
-
     "x_min": -1.0,
-
     "y_offset": 0,
-
     "y_max": 1.5,
-
     "y_min": 0.5,
-
     "z_offset": 0,
-
     "z_max": 2.20,
-
     "z_min": 0.3,
-
     "high_threshold": 1000,
-
     "low_Threshold": 500,
-
     "speed_y_threshold": 3,
-
     "distance_y_threshold": 2,
-
     "reference_points_size": 25000,
-
     "publishers": {
-
       "eebl_intern": {
-
         "communication": "ZeroMQ",
-
         "host": "tcp://0.0.0.0:5555",
-
-        "topic":"eebl_intern",
-
-        "host_server": true,
-
-        "batch_size": 1
-
-      },
-
-      "eebl_intern_gui": {
-
-        "communication": "ZeroMQ",
-
-        "host": "tcp://0.0.0.0:5557",
-
-        "topic":"eebl_intern_gui",
-
-        "host_server": true,
-
-        "batch_size": 1
-
-      }
-
-    },
-
-    "subscribers": {
-
-      "gps": {
-
-        "communication":"ZeroMQ",
-
-        "host": "tcp://172.16.0.50:5553",
-
-        "topic": "gps",
-
-        "host_server": false
-
-      },
-
-      "gps_replayer": {
-
-        "communication":"ZeroMQ",
-
-        "host": "tcp://127.0.0.1:5553",
-
-        "topic": "gps",
-
-        "host_server": false
-
-      },
-
-      "pointcloud": {
-
-        "communication":"ZeroMQ",
-
-        "host": "tcp://127.0.0.1:5554",
-
-        "topic": "pointcloud",
-
-        "host_server": false
-
-      },
-
-      "pointcloud_replayer": {
-
-        "communication":"ZeroMQ",
-
-        "host": "tcp://127.0.0.1:5554",
-
-        "topic": "pointcloud",
-
-        "host_server": false
-
-      }
-
-    }
-
-  },
-
-  "gateway": {
-
-    "block":"gateway",
-
-    "topic":"eebl_extern",
-
-    "publishers": {
-
-      "eebl_extern": {
-
-        "communication": "ZeroMQ",
-
-        "host": "tcp://0.0.0.0:5556",
-
-        "topic": "eebl_extern",
-
-        "host_server": true,
-
-        "batch_size": 1
-
-      }
-
-    },
-
-    "subscribers": {
-
-      "eebl_intern": {
-
-        "communication": "ZeroMQ",
-
-        "host": "tcp://172.16.0.50:5555",
-
         "topic": "eebl_intern",
-
-        "host_server": false
-
-      }
-
-    }
-
-  },
-
-  "gateway_ros": {
-
-    "block": "gateway_ros",
-
-    "publishers_": {
-
-      "velodyne_points": {
-
-        "communication": "ZeroMQ",
-
-        "host": "tcp://0.0.0.0:5554",
-
-        "topic": "pointcloud",
-
         "host_server": true,
-
         "batch_size": 1
-
-      }
-
-    },
-
-    "subscribers": {
-
-      "pointcloud": {
-
-        "communication": "ZeroMQ",
-
-        "host": "tcp://172.16.0.50:5554",
-
-        "topic": "pointcloud",
-
-        "host_server": false
-
       },
-
-      "pointcloud_replay": {
-
+      "eebl_intern_gui": {
         "communication": "ZeroMQ",
-
-        "host": "tcp://127.0.0.1:5554",
-
-        "topic": "pointcloud",
-
-        "host_server": false
-
-      }
-
-    }
-
-  },
-
-  "demo_gui": {
-
-    "subscribers": {
-
-      "gps": {
-
-        "communication": "ZeroMQ",
-
-        "host": "tcp://172.16.0.50:5553",
-
-        "topic":"gps",
-
-        "host_server": false
-
-      },
-
-      "gps__replay": {
-
-        "communication": "ZeroMQ",
-
-        "host": "tcp://127.0.0.1:5553",
-
-        "topic":"gps",
-
-        "host_server": false
-
-      },
-
-      "eebl_intern": {
-
-        "communication": "ZeroMQ",
-
-        "host": "tcp://172.16.0.50:5557",
-
+        "host": "tcp://0.0.0.0:5557",
         "topic": "eebl_intern_gui",
-
-        "host_server": false
-
-      },
-
-      "eebl_extern": {
-
+        "host_server": true,
+        "batch_size": 1
+      }
+    },
+    "subscribers": {
+      "gps": {
         "communication": "ZeroMQ",
-
-        "host": "tcp://127.0.0.1:5556",
-
-        "topic": "eebl_extern",
-
+        "host": "tcp://172.16.0.50:5553",
+        "topic": "gps",
         "host_server": false
-
+      },
+      "gps_replayer": {
+        "communication": "ZeroMQ",
+        "host": "tcp://127.0.0.1:5553",
+        "topic": "gps",
+        "host_server": false
+      },
+      "pointcloud": {
+        "communication": "ZeroMQ",
+        "host": "tcp://127.0.0.1:5554",
+        "topic": "pointcloud",
+        "host_server": false
+      },
+      "pointcloud_replayer": {
+        "communication": "ZeroMQ",
+        "host": "tcp://127.0.0.1:5554",
+        "topic": "pointcloud",
+        "host_server": false
+      }
+    }
+  },
+  "gateway": {
+    "block": "gateway",
+    "topic": "eebl_extern",
+    "publishers": {
+      "eebl_extern": {
+        "communication": "ZeroMQ",
+        "host": "tcp://0.0.0.0:5556",
+        "topic": "eebl_extern",
+        "host_server": true,
+        "batch_size": 1
+      }
+    },
+    "subscribers": {
+      "eebl_intern": {
+        "communication": "ZeroMQ",
+        "host": "tcp://172.16.0.50:5555",
+        "topic": "eebl_intern",
+        "host_server": false
+      }
+    }
+  },
+  "gateway_ros": {
+    "block": "gateway_ros",
+    "publishers_": {
+      "velodyne_points": {
+        "communication": "ZeroMQ",
+        "host": "tcp://0.0.0.0:5554",
+        "topic": "pointcloud",
+        "host_server": true,
+        "batch_size": 1
+      }
+    },
+    "subscribers": {
+      "pointcloud": {
+        "communication": "ZeroMQ",
+        "host": "tcp://172.16.0.50:5554",
+        "topic": "pointcloud",
+        "host_server": false
+      },
+      "pointcloud_replay": {
+        "communication": "ZeroMQ",
+        "host": "tcp://127.0.0.1:5554",
+        "topic": "pointcloud",
+        "host_server": false
+      }
+    }
+  },
+  "demo_gui": {
+    "subscribers": {
+      "gps": {
+        "communication": "ZeroMQ",
+        "host": "tcp://172.16.0.50:5553",
+        "topic": "gps",
+        "host_server": false
+      },
+      "gps__replay": {
+        "communication": "ZeroMQ",
+        "host": "tcp://127.0.0.1:5553",
+        "topic": "gps",
+        "host_server": false
+      },
+      "eebl_intern": {
+        "communication": "ZeroMQ",
+        "host": "tcp://172.16.0.50:5557",
+        "topic": "eebl_intern_gui",
+        "host_server": false
+      },
+      "eebl_extern": {
+        "communication": "ZeroMQ",
+        "host": "tcp://127.0.0.1:5556",
+        "topic": "eebl_extern",
+        "host_server": false
       },
       "vehicle_state": {
-
         "communication": "ZeroMQ",
-
         "host": "tcp://0.0.0.0:6969",
-
         "topic": "vehicle_state",
-
         "host_server": false
-
-      }
-
-    }
-
-  },
-
-  "logger": {
-
-    "block": "logger",
-
-    "subscribers": {
-
-      "pointcloud": {
-
-        "communication":"ZeroMQ",
-
-        "host": "tcp://172.16.0.50:5554",
-
-        "topic": "pointcloud",
-
-        "host_server": false
-
       },
-
-      "gps": {
-
+      "can_messages": {
         "communication": "ZeroMQ",
-
-        "host": "tcp://172.16.0.50:5553",
-
-        "topic":"gps",
-
+        "host": "tcp://0.0.0.0:1337",
+        "topic": "can_messages",
         "host_server": false
-
       }
-
     }
-
   },
-
-  "replayer": {
-
-    "block": "replayer",
-
-    "publishers": {
-
+  "logger": {
+    "block": "logger",
+    "subscribers": {
       "pointcloud": {
-
         "communication": "ZeroMQ",
-
-        "host": "tcp://0.0.0.0:5554",
-
+        "host": "tcp://172.16.0.50:5554",
         "topic": "pointcloud",
-
-        "host_server": true,
-
-        "batch_size": 1
-
+        "host_server": false
+      },
+      "gps": {
+        "communication": "ZeroMQ",
+        "host": "tcp://172.16.0.50:5553",
+        "topic": "gps",
+        "host_server": false
       }
-
     }
-
+  },
+  "replayer": {
+    "block": "replayer",
+    "publishers": {
+      "pointcloud": {
+        "communication": "ZeroMQ",
+        "host": "tcp://0.0.0.0:5554",
+        "topic": "pointcloud",
+        "host_server": true,
+        "batch_size": 1
+      }
+    }
   }
-
 }
 
 

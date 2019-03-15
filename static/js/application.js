@@ -96,7 +96,9 @@ $(document).ready(function() {
                 map.removeLayer(eebl_markerr);
             }, stopicontimeout);
         } else {
-            info_string = 'Extern: NaN'
+            info_string = '<p>eebl_lat: NaN</p>\n' +
+                ' <p>eebl_longitude: NaN</p>\n' +
+                ' <p>eebl_speed: NaN</p>'
         }
         $('#eeblextern').html(info_string);
     });
@@ -120,8 +122,8 @@ $(document).ready(function() {
 
         if(msg.timeout === 'false') {
 
-            if($("table").hasClass("bg-danger")) {
-                $("table").removeClass("bg-danger")
+            if($("#"+msg.type).parent().hasClass("bg-danger")) {
+                $("#"+msg.type).parent().removeClass("bg-danger")
             }
             var table = document.getElementById("vehicle_state");
             //create a dynamic table that adds new keys and updates old values
@@ -139,12 +141,7 @@ $(document).ready(function() {
             }
         } else {
             //show user that a timeout happened
-            $("table").addClass("bg-danger");
+            $("#"+msg.type).parent().addClass("bg-danger");
         }
-
-
     });
-
-
-
 });
