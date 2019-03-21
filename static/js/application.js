@@ -6,6 +6,10 @@ $(document).ready(function() {
      var firstMsg = true;
      var stopicon_timeout = 5000;
      var redCar_timeout = 5000;
+     var audio_timeout_extern = 10000;
+     var audio_timeout_intern = 10000;
+     var last_audio_played_intern = 0;
+     var last_audio_played_extern = 0;
      var audio = new Audio('static/sound/short_mario_alert.mp3')
      //icon names are from the font awesome website!
      var carIcon = L.AwesomeMarkers.icon({
@@ -94,7 +98,10 @@ $(document).ready(function() {
     socket.on('eebl_extern', function(msg) {
         console.log("Received eebl_extern");
         if (msg.timeout === "false") {
-            audio.play();
+            if((new Date).getTime() - last_audio_played_extern > audio_timeout_extern) {
+                audio.play();
+                last_audio_played_extern = (new Date).getTime();
+            }
             info_string = '<p>eebl_lat: ' + msg.eebl_lat.toString() + '</p>';
             info_string = info_string + '<p>eebl_longitude: ' + msg.eebl_lon.toString() + '</p>'
             info_string = info_string + '<p>eebl_speed: ' + msg.speed.toString() + '</p>'
@@ -105,15 +112,16 @@ $(document).ready(function() {
             }, stopicon_timeout);
 
         } else {
-            info_string = '<p>eebl_lat: NaN</p>\n' +
-                ' <p>eebl_longitude: NaN</p>\n' +
-                ' <p>eebl_speed: NaN</p>';
+            info_string = '<p>Extern: OK </p>';
         }
         $('#eeblextern').html(info_string);
     });
 
      socket.on('eebl_intern_det', function(msg) {
-        audio.play()
+         if((new Date).getTime() - last_audio_played_intern > audio_timeout_intern) {
+             audio.play();
+             last_audio_played_intern = (new Date).getTime();
+         }
         console.log("Received eebl_intern_det");
         info_string = '<p>eebl_lat: ' + msg.eebl_lat.toString() + '</p>';
         info_string = info_string + '<p>eebl_longitude: ' + msg.eebl_lon.toString() + '</p>';
