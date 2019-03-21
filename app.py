@@ -72,4 +72,4 @@ if __name__ == '__main__':
         # p = PiCanTopicPublisher("pi_can_publisher")
         # p.parse_json_configuration_file("Mocking/config/picantopic.json")
         # p.start()
-    socketio.run(app, host='127.0.0.1')
+    socketio.run(app, host='0.0.0.0')
