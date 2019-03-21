@@ -178,7 +178,6 @@ class CommunicationBlock(AbstractBlock):
 
 
 
-
     def on_message_lost(self, topic, message_id):
         """Implement message lost callback."""
         logger.debug("lost message")
