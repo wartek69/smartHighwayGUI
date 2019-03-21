@@ -1,0 +1,12 @@
+{
+ "eebl_intern_publisher": {
+   "publishers": {
+     "eebl_intern_gui": {
+       "communication":"ZeroMQ",
+       "host": "tcp://0.0.0.0:5557",
+       "topic": "eebl_intern_gui",
+       "host_server": true
+     }
+   }
+ }
+}

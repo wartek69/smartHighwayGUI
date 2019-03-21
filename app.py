@@ -3,6 +3,7 @@ from flask import Flask, render_template
 import logging
 from CommunicationBlock import CommunicationBlock
 from Mocking.CanMessagePublisher import CanMessagePublisher
+from Mocking.InternEeblPublisher import InternEeblPublisher
 from Mocking.PiCanTopicPublisher import PiCanTopicPublisher
 from __version__ import VERSION
 from flask_socketio import SocketIO
@@ -64,6 +65,10 @@ if __name__ == '__main__':
         e = ExternEeblPublisher("eebl_publisher")
         e.parse_json_configuration_file("Mocking/config/externpub.json")
         e.start()
+
+        i = InternEeblPublisher("eebl_intern_publisher")
+        i.parse_json_configuration_file("Mocking/config/internpub.json")
+        i.start()
 
         # c = CanMessagePublisher("can_message_publisher")
         # c.parse_json_configuration_file("Mocking/config/canmessagepub.json")
