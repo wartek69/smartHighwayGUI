@@ -10,7 +10,8 @@ $(document).ready(function() {
      var audio_timeout_intern = 10000;
      var last_audio_played_intern = 0;
      var last_audio_played_extern = 0;
-     var audio = new Audio('static/sound/short_mario_alert.mp3')
+     var audio_extern = new Audio('static/sound/short_mario_alert.mp3');
+     var audio_intern = new Audio('static/sound/wooden_train.mp3')
      //icon names are from the font awesome website!
      var carIcon = L.AwesomeMarkers.icon({
          prefix: 'fa',
@@ -99,7 +100,7 @@ $(document).ready(function() {
         console.log("Received eebl_extern");
         if (msg.timeout === "false") {
             if((new Date).getTime() - last_audio_played_extern > audio_timeout_extern) {
-                audio.play();
+                audio_extern.play();
                 last_audio_played_extern = (new Date).getTime();
             }
             info_string = '<p>eebl_lat: ' + msg.eebl_lat.toString() + '</p>';
@@ -119,7 +120,7 @@ $(document).ready(function() {
 
      socket.on('eebl_intern_det', function(msg) {
          if((new Date).getTime() - last_audio_played_intern > audio_timeout_intern) {
-             audio.play();
+             audio_intern.play();
              last_audio_played_intern = (new Date).getTime();
          }
         console.log("Received eebl_intern_det");

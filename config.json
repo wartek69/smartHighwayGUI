@@ -153,7 +153,7 @@
       },
       "eebl_intern": {
         "communication": "ZeroMQ",
-        "host": "tcp://172.16.0.50:5557",
+        "host": "tcp://0.0.0.0:5557",
         "topic": "eebl_intern_gui",
         "host_server": false
       },
