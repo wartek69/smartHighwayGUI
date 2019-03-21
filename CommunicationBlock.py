@@ -61,7 +61,7 @@ class CommunicationBlock(AbstractBlock):
         logger.debug("entered check_time_outs")
         #lock neccessary because different instances of
         self.lock.acquire()
-        if self.eebl_intern_timeout < datetime.now() - timedelta(seconds=1) and self.tintern == False:
+        if self.eebl_intern_timeout < datetime.now() - timedelta(seconds=0.25) and self.tintern == False:
             self.tintern = True
             self.socketio.emit('eebl_intern', {'info': "Intern: NaN"})
         if self.eebl_extern_timeout < datetime.now() - timedelta(seconds=1) and self.textern == False:
