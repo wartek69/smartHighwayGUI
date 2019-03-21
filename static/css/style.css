@@ -33,3 +33,6 @@ body {
 #eeblintern {
     min-height: 110px;
 }
+td {
+    font-family: monospace;
+}
