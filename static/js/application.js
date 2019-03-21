@@ -113,6 +113,7 @@ $(document).ready(function() {
     });
 
      socket.on('eebl_intern_det', function(msg) {
+        audio.play()
         console.log("Received eebl_intern_det");
         info_string = '<p>eebl_lat: ' + msg.eebl_lat.toString() + '</p>';
         info_string = info_string + '<p>eebl_longitude: ' + msg.eebl_lon.toString() + '</p>';
