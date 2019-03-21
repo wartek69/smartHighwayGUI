@@ -5,12 +5,20 @@ $(document).ready(function() {
      var zoom = 17;
      var firstMsg = true;
      var stopicon_timeout = 5000;
+     var redCar_timeout = 5000;
      var audio = new Audio('static/sound/short_mario_alert.mp3')
      //icon names are from the font awesome website!
      var carIcon = L.AwesomeMarkers.icon({
          prefix: 'fa',
          extraClasses: 'fas',
          iconColor: 'green',
+         icon: 'car-side'
+     });
+
+      var redCarIcon = L.AwesomeMarkers.icon({
+         prefix: 'fa',
+         extraClasses: 'fas',
+         iconColor: 'red',
          icon: 'car-side'
      });
 
@@ -76,7 +84,6 @@ $(document).ready(function() {
                 // map.panTo([msg.gps_lat, msg.gps_lon]);
                 firstMsg = false;
             }
-
         } else {
             info_string ="Location: NaN"
             firstMsg = true;
@@ -91,16 +98,16 @@ $(document).ready(function() {
             info_string = '<p>eebl_lat: ' + msg.eebl_lat.toString() + '</p>';
             info_string = info_string + '<p>eebl_longitude: ' + msg.eebl_lon.toString() + '</p>'
             info_string = info_string + '<p>eebl_speed: ' + msg.speed.toString() + '</p>'
-            var eebl_markerr = L.marker([msg.eebl_lat, msg.eebl_lon], {icon: stopIcon}).addTo(map)
-                .bindPopup('\nlon: ' + msg.eebl_lon + ' \nlat: ' + msg.eebl_lon + '\nspeed: ' + msg.speed );
+            var eebl_marker = L.marker([msg.eebl_lat, msg.eebl_lon], {icon: stopIcon}).addTo(map)
+                .bindPopup('\nlon: ' + msg.eebl_lon + ' \nlat: ' + msg.eebl_lat + '\nspeed: ' + msg.speed );
             setTimeout(function() {
-                map.removeLayer(eebl_markerr);
+                map.removeLayer(eebl_marker);
             }, stopicon_timeout);
 
         } else {
             info_string = '<p>eebl_lat: NaN</p>\n' +
                 ' <p>eebl_longitude: NaN</p>\n' +
-                ' <p>eebl_speed: NaN</p>'
+                ' <p>eebl_speed: NaN</p>';
         }
         $('#eeblextern').html(info_string);
     });
@@ -108,8 +115,13 @@ $(document).ready(function() {
      socket.on('eebl_intern_det', function(msg) {
         console.log("Received eebl_intern_det");
         info_string = '<p>eebl_lat: ' + msg.eebl_lat.toString() + '</p>';
-        info_string = info_string + '<p>eebl_longitude: ' + msg.eebl_lon.toString() + '</p>'
-        info_string = info_string + '<p>eebl_speed: ' + msg.speed.toString() + '</p>'
+        info_string = info_string + '<p>eebl_longitude: ' + msg.eebl_lon.toString() + '</p>';
+        info_string = info_string + '<p>eebl_speed: ' + msg.speed.toString() + '</p>';
+        var intern_marker = L.marker([msg.eebl_lat, msg.eebl_lon], {icon: redCarIcon}).addTo(map)
+                .bindPopup('\nlon: ' + msg.eebl_lon + ' \nlat: ' + msg.eebl_lat + '\nspeed: ' + msg.speed );
+            setTimeout(function() {
+                map.removeLayer(intern_marker);
+            }, redCar_timeout);
         $('#eeblintern').html(info_string);
     });
 

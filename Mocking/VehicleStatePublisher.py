@@ -13,9 +13,11 @@ logger = logging.getLogger(__name__)
 
 class VehicleStatePublisher(AbstractBlock, Thread):
     publish_topic = "vehicle_state"
+
     def __init__(self, name):
         AbstractBlock.__init__(self, name)
         Thread.__init__(self)
+
     def configure_block(self, configuration):
         pass
 

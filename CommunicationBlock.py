@@ -124,7 +124,7 @@ class CommunicationBlock(AbstractBlock):
         if topic == 'eebl_extern':
             eebl = EEBL()
             eebl.ParseFromString(message.get_payload_bytes())
-            text = "Intern: OBJECT_DETECTED at {0:.4f}, {1:.4f} at speed {2:.2f}".format(eebl.location.lat_value,
+            text = "Extern: OBJECT_DETECTED at {0:.4f}, {1:.4f} at speed {2:.2f}".format(eebl.location.lat_value,
                                                                                          eebl.location.lon_value,
                                                                                          eebl.speed)
             self.socketio.emit('eebl_extern', {'eebl_lat': eebl.location.lat_value,
