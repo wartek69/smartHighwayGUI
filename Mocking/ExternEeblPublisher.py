@@ -41,7 +41,7 @@ class ExternEeblPublisher(AbstractBlock, Thread):
             dust_message = DustMessage(self.publish_topic, 0, eebl.SerializeToString())
             self.publish(self.publish_topic, dust_message)
             logger.info("Published message on eebl_extern")
-            sleep(1)
+            sleep(0.2)
         while(True):
             eebl = EEBL()
             eebl.location.lat_value = 51.22

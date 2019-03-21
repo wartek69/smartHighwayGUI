@@ -4,8 +4,8 @@ $(document).ready(function() {
      var tableElements = [];
      var zoom = 17;
      var firstMsg = true;
-     var stopicontimeout = 5000;
-
+     var stopicon_timeout = 5000;
+     var audio = new Audio('static/sound/short_mario_alert.mp3')
      //icon names are from the font awesome website!
      var carIcon = L.AwesomeMarkers.icon({
          prefix: 'fa',
@@ -87,6 +87,7 @@ $(document).ready(function() {
     socket.on('eebl_extern', function(msg) {
         console.log("Received eebl_extern");
         if (msg.timeout === "false") {
+            audio.play();
             info_string = '<p>eebl_lat: ' + msg.eebl_lat.toString() + '</p>';
             info_string = info_string + '<p>eebl_longitude: ' + msg.eebl_lon.toString() + '</p>'
             info_string = info_string + '<p>eebl_speed: ' + msg.speed.toString() + '</p>'
@@ -94,7 +95,8 @@ $(document).ready(function() {
                 .bindPopup('\nlon: ' + msg.eebl_lon + ' \nlat: ' + msg.eebl_lon + '\nspeed: ' + msg.speed );
             setTimeout(function() {
                 map.removeLayer(eebl_markerr);
-            }, stopicontimeout);
+            }, stopicon_timeout);
+
         } else {
             info_string = '<p>eebl_lat: NaN</p>\n' +
                 ' <p>eebl_longitude: NaN</p>\n' +

@@ -57,19 +57,19 @@ if __name__ == '__main__':
     main()
     if args.mock :
         # only for testing
-        v = VehicleStatePublisher("vehicle_state_publisher")
-        v.parse_json_configuration_file("Mocking/config/vehiclestatepub.json")
-        v.start()
+        # v = VehicleStatePublisher("vehicle_state_publisher")
+        # v.parse_json_configuration_file("Mocking/config/vehiclestatepub.json")
+        # v.start()
 
         e = ExternEeblPublisher("eebl_publisher")
         e.parse_json_configuration_file("Mocking/config/externpub.json")
         e.start()
 
-        c = CanMessagePublisher("can_message_publisher")
-        c.parse_json_configuration_file("Mocking/config/canmessagepub.json")
-        c.start()
-
-        p = PiCanTopicPublisher("pi_can_publisher")
-        p.parse_json_configuration_file("Mocking/config/picantopic.json")
-        p.start()
-    socketio.run(app, host='0.0.0.0')
+        # c = CanMessagePublisher("can_message_publisher")
+        # c.parse_json_configuration_file("Mocking/config/canmessagepub.json")
+        # c.start()
+        #
+        # p = PiCanTopicPublisher("pi_can_publisher")
+        # p.parse_json_configuration_file("Mocking/config/picantopic.json")
+        # p.start()
+    socketio.run(app, host='127.0.0.1')
