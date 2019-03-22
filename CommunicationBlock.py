@@ -18,6 +18,8 @@ import logging
 from pydust.abstract_block import AbstractBlock
 from pydust.dust_message import DustMessage
 
+import configparser
+
 logger = logging.getLogger(__name__)
 
 # block used to communicate with the dust framework and represent the data in a web app
@@ -27,6 +29,11 @@ class CommunicationBlock(AbstractBlock):
     eebl_intern_timeout = datetime.now() - timedelta(seconds=0.25)
     eebl_extern_timeout = datetime.now() - timedelta(seconds=1)
     gps_timeout = datetime.now() - timedelta(seconds=2)
+    intern_timeout_value = 0.25
+    extern_timeout_value = 1
+    gps_timeout_value = 2
+    vehicle_timeout_value = 2
+    can_message_timeout_value = 2
 
     # t variables used to prevent spamming the client with timeouts -> one timeout enough
     tintern = False;
@@ -45,6 +52,17 @@ class CommunicationBlock(AbstractBlock):
     def __init__(self, name, socketio):
         AbstractBlock.__init__(self, name)
         self.socketio = socketio
+        self.load_config_param()
+
+    def load_config_param(self):
+        config = configparser.ConfigParser()
+        config.read('config/gui_config.ini')
+        self.intern_timeout_value = float(config['MESSAGE']['EEBL_INTERN_TIMEOUT'])
+        self.extern_timeout_value = float(config['MESSAGE']['EEBL_EXTERN_TIMEOUT'])
+        self.gps_timeout_value = float(config['MESSAGE']['GPS_TIMEOUT'])
+        self.vehicle_timeout_value = float(config['MESSAGE']['VEHICLE_STATE_TIMEOUT'])
+        self.can_message_timeout_value = float(config['MESSAGE']['CAN_MESSAGE_TIMEOUT'])
+        print('')
 
     def setSocketio(self, socketio):
         self.socketio = socketio
@@ -61,19 +79,19 @@ class CommunicationBlock(AbstractBlock):
         logger.debug("entered check_time_outs")
         #lock neccessary because different instances of
         self.lock.acquire()
-        if self.eebl_intern_timeout < datetime.now() - timedelta(seconds=0.25) and self.tintern == False:
+        if self.eebl_intern_timeout < datetime.now() - timedelta(seconds=self.intern_timeout_value) and self.tintern == False:
             self.tintern = True
             self.socketio.emit('eebl_intern', {'info': "Intern: NaN"})
-        if self.eebl_extern_timeout < datetime.now() - timedelta(seconds=1) and self.textern == False:
+        if self.eebl_extern_timeout < datetime.now() - timedelta(seconds=self.extern_timeout_value) and self.textern == False:
             self.textern = True
             self.socketio.emit('eebl_extern', {'timeout': 'true'})
-        if self.gps_timeout < datetime.now() - timedelta(seconds=2) and self.tgps == False:
+        if self.gps_timeout < datetime.now() - timedelta(seconds=self.gps_timeout_value) and self.tgps == False:
             self.tgps = True
             self.socketio.emit('newgps', {'timeout': 'true'})
 
         for state_type, vehicle_state_timeout in list(self.vehicle_state_timeouts.items()):
             if vehicle_state_timeout.last_update < datetime.now() - timedelta(
-                    seconds=2) and vehicle_state_timeout.timeout == False:
+                    seconds=self.vehicle_timeout_value) and vehicle_state_timeout.timeout == False:
                 logger.debug("about to delete vehicle timeout")
                 del self.vehicle_state_timeouts[state_type]
                 logger.debug("deleted vehicle timeout")
@@ -82,7 +100,7 @@ class CommunicationBlock(AbstractBlock):
                                                      'timeout': 'true'})
 
         for can_message_id, can_message_timeout in list(self.can_messages_timeouts.items()):
-            if can_message_timeout.last_update < datetime.now() - timedelta(seconds=2) and can_message_timeout.timeout == False:
+            if can_message_timeout.last_update < datetime.now() - timedelta(seconds=self.can_message_timeout_value) and can_message_timeout.timeout == False:
                 logger.debug("about to delete can messages timeout")
                 del self.can_messages_timeouts[can_message_id]
                 logger.debug("deleted can messages timeout")

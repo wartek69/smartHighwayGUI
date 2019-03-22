@@ -23,8 +23,8 @@ app = Flask(__name__)
 socketio = SocketIO(app)
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-C", "--configuration-path", help="Database name",
-                    default="./config.json")
+parser.add_argument("-C", "--configuration-path", help="config.json location",
+                    default="./config/config.json")
 parser.add_argument("--verbose", help="Run in verbose mode",
                     action="store_true")
 parser.add_argument("--mock", help="mock data of external eebl and vehicle state",

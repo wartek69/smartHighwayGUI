@@ -1,6 +1,5 @@
 $(document).ready(function () {
     var gps_marker = undefined;
-    var eebl_marker = undefined;
     var tableElements = [];
     var zoom = 17;
     var firstMsg = true;
