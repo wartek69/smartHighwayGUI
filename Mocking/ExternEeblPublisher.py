@@ -50,4 +50,4 @@ class ExternEeblPublisher(AbstractBlock, Thread):
 
             dust_message = DustMessage(self.publish_topic, 0, eebl.SerializeToString())
             self.publish(self.publish_topic, dust_message)
-            sleep(7)
+            sleep(0.5)

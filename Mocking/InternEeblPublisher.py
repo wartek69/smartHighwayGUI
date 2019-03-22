@@ -55,4 +55,4 @@ class InternEeblPublisher(AbstractBlock, Thread):
 
             dust_message = DustMessage(self.publish_topic, 0, eebl.SerializeToString())
             self.publish(self.publish_topic, dust_message)
-            sleep(0.5)
+            sleep(0.2)
