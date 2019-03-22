@@ -127,6 +127,7 @@ $(document).ready(function () {
             // red car on the map
             intern_marker = L.marker([msg.eebl_lat, msg.eebl_lon], {icon: redCarIcon}).addTo(map)
                 .bindPopup('\nlon: ' + msg.eebl_lon + ' \nlat: ' + msg.eebl_lat + '\nspeed: ' + msg.speed);
+            intern_marker.setZIndexOffset(100);
         }
         console.log("Received eebl_intern_det");
         info_string = '<p>eebl_lat: ' + msg.eebl_lat.toString() + '</p>';

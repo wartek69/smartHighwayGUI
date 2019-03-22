@@ -106,7 +106,7 @@ class CommunicationBlock(AbstractBlock):
                 logger.debug("deleted can messages timeout")
 
                 self.socketio.emit('can_messages', {'id': can_message_id,
-                                                     'timeout': 'true'})
+                                                    'timeout': 'true'})
         self.lock.release()
 
     def on_message(self, topic: str, message: DustMessage):
