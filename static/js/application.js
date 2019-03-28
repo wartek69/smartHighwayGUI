@@ -113,7 +113,7 @@ $(document).ready(function () {
             }, stopicon_timeout);
 
         } else {
-            console.log('eebl_extern time out');
+            console.log('eebl_extern timeout');
             extern_breaking = false;
             info_string = '<p>Extern: OK </p>';
         }

@@ -30,6 +30,8 @@ class ExternEeblPublisher(AbstractBlock, Thread):
             eebl.location.lat_value = 51.22
             eebl.location.lon_value = 4.40
             eebl.speed = 50
+            eebl.type = 2
+
 
             dust_message = DustMessage(self.publish_topic, 0, eebl.SerializeToString())
             self.publish(self.publish_topic, dust_message)
@@ -37,6 +39,8 @@ class ExternEeblPublisher(AbstractBlock, Thread):
             eebl.location.lat_value = 51.20
             eebl.location.lon_value = 4.40
             eebl.speed = 69
+            eebl.type = 2
+
 
             dust_message = DustMessage(self.publish_topic, 0, eebl.SerializeToString())
             self.publish(self.publish_topic, dust_message)
@@ -47,7 +51,20 @@ class ExternEeblPublisher(AbstractBlock, Thread):
             eebl.location.lat_value = 51.22
             eebl.location.lon_value = 4.40
             eebl.speed = 50
+            eebl.type = 2
+
 
             dust_message = DustMessage(self.publish_topic, 0, eebl.SerializeToString())
             self.publish(self.publish_topic, dust_message)
-            sleep(0.5)
+
+            sleep(5)
+            eebl = EEBL()
+            eebl.location.lat_value = 51.22
+            eebl.location.lon_value = 4.40
+            eebl.speed = 50
+            eebl.type = 0
+
+            dust_message = DustMessage(self.publish_topic, 0, eebl.SerializeToString())
+            self.publish(self.publish_topic, dust_message)
+            sleep(5)
+

@@ -22,6 +22,7 @@ import configparser
 
 logger = logging.getLogger(__name__)
 
+
 # block used to communicate with the dust framework and represent the data in a web app
 class CommunicationBlock(AbstractBlock):
     lock = Lock()
@@ -77,14 +78,19 @@ class CommunicationBlock(AbstractBlock):
 
     def check_time_outs(self):
         logger.debug("entered check_time_outs")
-        #lock neccessary because different instances of
+        # lock neccessary because different instances of
         self.lock.acquire()
-        if self.eebl_intern_timeout < datetime.now() - timedelta(seconds=self.intern_timeout_value) and self.tintern == False:
+        if self.eebl_intern_timeout < datetime.now() - timedelta(
+                seconds=self.intern_timeout_value) and self.tintern == False:
             self.tintern = True
             self.socketio.emit('eebl_intern', {'info': "Intern: NaN"})
-        if self.eebl_extern_timeout < datetime.now() - timedelta(seconds=self.extern_timeout_value) and self.textern == False:
+            self.socketio.emit('intern', {'timeout': 'true'})
+        if self.eebl_extern_timeout < datetime.now() - timedelta(
+                seconds=self.extern_timeout_value) and self.textern == False:
             self.textern = True
             self.socketio.emit('eebl_extern', {'timeout': 'true'})
+            #extern timeout used on index page to update squares
+            self.socketio.emit('extern', {'timeout': 'true'})
         if self.gps_timeout < datetime.now() - timedelta(seconds=self.gps_timeout_value) and self.tgps == False:
             self.tgps = True
             self.socketio.emit('newgps', {'timeout': 'true'})
@@ -100,7 +106,8 @@ class CommunicationBlock(AbstractBlock):
                                                      'timeout': 'true'})
 
         for can_message_id, can_message_timeout in list(self.can_messages_timeouts.items()):
-            if can_message_timeout.last_update < datetime.now() - timedelta(seconds=self.can_message_timeout_value) and can_message_timeout.timeout == False:
+            if can_message_timeout.last_update < datetime.now() - timedelta(
+                    seconds=self.can_message_timeout_value) and can_message_timeout.timeout == False:
                 logger.debug("about to delete can messages timeout")
                 del self.can_messages_timeouts[can_message_id]
                 logger.debug("deleted can messages timeout")
@@ -120,7 +127,9 @@ class CommunicationBlock(AbstractBlock):
             text = "Intern: NaN"
             if eebl.type == EEBL_Type.Value("OK"):
                 text = "Intern: Ok"
-                self.socketio.emit('eebl_intern', {'info':text})
+                self.socketio.emit('eebl_intern', {'info': text})
+                self.socketio.emit('intern', {'type': 'OK',
+                                              'timeout': 'false'})
 
             if eebl.type == EEBL_Type.Value("OBJECT_DETECTED"):
                 text = "Intern: OBJECT_DETECTED at {0:.4f}, {1:.4f} at speed {2:.2f}".format(eebl.location.lat_value,
@@ -130,10 +139,19 @@ class CommunicationBlock(AbstractBlock):
                                                        'eebl_lon': eebl.location.lon_value,
                                                        'speed': eebl.speed,
                                                        'timeout': 'false'})
+                self.socketio.emit('intern', {'type': 'OBJECT_DETECTED',
+                                              'timeout': 'false'})
 
             if eebl.type == EEBL_Type.Value("SENSOR_FAILURE"):
                 text = "Intern: SENSOR FAILURE"
-                self.socketio.emit('eebl_intern', {'info':text})
+                self.socketio.emit('eebl_intern', {'info': text})
+                self.socketio.emit('intern', {'type': 'SENSOR_FAILURE',
+                                              'timeout': 'false'})
+            if eebl.type == EEBL_Type.Value("UNKNOWN"):
+                text = "Intern: UNKNOWN"
+                self.socketio.emit('eebl_intern', {'info': text})
+                self.socketio.emit('intern', {'type': 'UNKNOWN',
+                                              'timeout': 'false'})
 
             logger.debug(text)
             self.eebl_intern_timeout = datetime.now()
@@ -142,16 +160,24 @@ class CommunicationBlock(AbstractBlock):
         if topic == 'eebl_extern':
             eebl = EEBL()
             eebl.ParseFromString(message.get_payload_bytes())
-            text = "Extern: OBJECT_DETECTED at {0:.4f}, {1:.4f} at speed {2:.2f}".format(eebl.location.lat_value,
-                                                                                         eebl.location.lon_value,
-                                                                                         eebl.speed)
-            self.socketio.emit('eebl_extern', {'eebl_lat': eebl.location.lat_value,
-                                               'eebl_lon': eebl.location.lon_value,
-                                               'speed': eebl.speed,
-                                               'timeout': 'false'})
+
+            if eebl.type == EEBL_Type.Value("OBJECT_DETECTED"):
+                text = "Extern: OBJECT_DETECTED at {0:.4f}, {1:.4f} at speed {2:.2f}".format(eebl.location.lat_value,
+                                                                                             eebl.location.lon_value,
+                                                                                             eebl.speed)
+                self.socketio.emit('eebl_extern', {'eebl_lat': eebl.location.lat_value,
+                                                   'eebl_lon': eebl.location.lon_value,
+                                                   'speed': eebl.speed,
+                                                   'timeout': 'false'})
+                self.socketio.emit('extern', {'type': 'OBJECT_DETECTED',
+                                              'timeout': 'false'});
+            if eebl.type == EEBL_Type.Value("UNKNOWN"):
+                text = "unknown"
+                self.socketio.emit('extern', {'type': 'UNKNOWN',
+                                              'timeout': 'false'});
+
             logger.debug(text)
-            # if self.eebl_extern_timeout < datetime.now() - timedelta(seconds=1):
-            #     system('play --no-show-progress --null --channels 1 synth %s sine %f' % (0.25, 1000))
+
             self.eebl_extern_timeout = datetime.now()
             self.textern = False
 
@@ -160,12 +186,12 @@ class CommunicationBlock(AbstractBlock):
             gps_data = GpsData()
             gps_data.ParseFromString(message.get_payload_bytes())
             print("Own Location: {0:.8f}, {1:.8f} at speed {2:.4f}".format(gps_data.lat_value,
-                                                                                      gps_data.lon_value,
-                                                                                      gps_data.speed_value))
-            self.socketio.emit('newgps',{'gps_lat': gps_data.lat_value,
-                                         'gps_lon': gps_data.lon_value,
-                                         'speed': gps_data.speed_value,
-                                         'timeout': 'false'})
+                                                                           gps_data.lon_value,
+                                                                           gps_data.speed_value))
+            self.socketio.emit('newgps', {'gps_lat': gps_data.lat_value,
+                                          'gps_lon': gps_data.lon_value,
+                                          'speed': gps_data.speed_value,
+                                          'timeout': 'false'})
             self.gps_timeout = datetime.now()
             self.tgps = False
         if topic == 'vehicle_state':
@@ -184,7 +210,7 @@ class CommunicationBlock(AbstractBlock):
             self.vehicle_state_timeouts[varname] = self.VehicleStateTimeout(False, datetime.now())
             logger.debug("left vehicle_state")
 
-        if topic =='can_messages':
+        if topic == 'can_messages':
             logger.info("Can message arrived!")
             can_message = CanData()
             can_message.ParseFromString(message.get_payload_bytes())
@@ -193,8 +219,6 @@ class CommunicationBlock(AbstractBlock):
                                                 'value': can_message.data.hex(),
                                                 'timeout': 'false'})
             self.can_messages_timeouts[can_message.id] = self.CanMessagesTimeout(False, datetime.now())
-
-
 
     def on_message_lost(self, topic, message_id):
         """Implement message lost callback."""

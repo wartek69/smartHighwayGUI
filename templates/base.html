@@ -31,8 +31,11 @@
 
         <div class="collapse navbar-collapse" id="navbarResponsive">
             <ul class="navbar-nav ml-auto">
+                <li class = "nav-item {% if active_page == 'home' %} active {% endif %}">
+                    <a class = "nav-link" href="/">Home</a>
+                </li>
                 <li class = "nav-item {% if active_page == 'gui' %} active {% endif %}">
-                    <a class = "nav-link" href="/">Smart Highway GUI</a>
+                    <a class = "nav-link" href="/gui">Smart Highway GUI</a>
                 </li>
                 <li class = "nav-item {% if active_page == 'console' %} active {% endif %}">
                     <a class = "nav-link" href="console">Developer Console</a>

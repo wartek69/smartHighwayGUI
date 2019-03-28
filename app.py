@@ -52,6 +52,10 @@ def console():
 def home():
     return render_template("home.html")
 
+@app.route('/gui')
+def gui():
+    return render_template("gui.html")
+
 
 
 if __name__ == '__main__':

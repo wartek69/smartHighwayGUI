@@ -36,3 +36,13 @@ body {
 td {
     font-family: monospace;
 }
+
+.square {
+    min-height: 90vh;
+    border-radius: 25px;
+}
+
+
+.bg-yellow {
+    background: yellow;
+}

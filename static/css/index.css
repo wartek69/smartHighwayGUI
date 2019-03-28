@@ -1,0 +1,17 @@
+body {
+    height: 100%;
+}
+.content {
+    padding-top: 40px;
+}
+html {
+    height: 100%;
+    position: relative;
+}
+.square {
+    max-height: 100%;
+    border-radius: 25px;
+}
+.navbar {
+    position: absolute;
+}
