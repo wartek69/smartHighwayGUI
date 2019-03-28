@@ -172,7 +172,7 @@ class CommunicationBlock(AbstractBlock):
                 self.socketio.emit('extern', {'type': 'OBJECT_DETECTED',
                                               'timeout': 'false'});
             if eebl.type == EEBL_Type.Value("UNKNOWN"):
-                text = "unknown"
+                text = "UNKNOWN"
                 self.socketio.emit('extern', {'type': 'UNKNOWN',
                                               'timeout': 'false'});
 

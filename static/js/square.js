@@ -22,14 +22,16 @@ $(document).ready(function() {
 
     socket.on('intern', function(msg) {
         console.log("Received extern event");
-        $("#intern").removeClass("bg-danger bg-success bg-yellow")
+        if(msg.type != undefined) {
+            $("#intern").removeClass("bg-danger bg-success bg-yellow")
 
-        if(msg.timeout === 'true') {
-            $("#intern").addClass("bg-success");
-        } else if(msg.type === 'UNKNOWN') {
-            $("#intern").addClass("bg-yellow");
-        } else {
-            $("#intern").addClass("bg-danger");
+            if(msg.type === 'OK') {
+                $("#intern").addClass("bg-success");
+            } else if(msg.type === 'UNKNOWN') {
+                $("#intern").addClass("bg-yellow");
+            } else {
+                $("#intern").addClass("bg-danger");
+            }
         }
 
     });
