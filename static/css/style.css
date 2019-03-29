@@ -45,7 +45,7 @@ td {
 /* On screens that are 992px or less, set the background color to blue */
 @media screen and (max-width: 760px) {
   .square {
-      height: calc(55vh - 60px - 35px);
+      height: calc(50vh - 60px - 35px);
       border-radius: 25px;
       margin-bottom: 10px;
 }

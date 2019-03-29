@@ -27,16 +27,16 @@ class InternEeblPublisher(AbstractBlock, Thread):
         while (i < 15):
             i+=1
             eebl = EEBL()
-            eebl.location.lat_value = 51.22
-            eebl.location.lon_value = 4.40
+            eebl.location.lat_value = 51.28
+            eebl.location.lon_value = 4.42
             eebl.speed = 50
             eebl.type = 2
 
             dust_message = DustMessage(self.publish_topic, 0, eebl.SerializeToString())
             self.publish(self.publish_topic, dust_message)
             eebl = EEBL()
-            eebl.location.lat_value = 51.20
-            eebl.location.lon_value = 4.40
+            eebl.location.lat_value = 51.28
+            eebl.location.lon_value = 4.42
             eebl.speed = 69
             eebl.type = 2
 
@@ -44,27 +44,27 @@ class InternEeblPublisher(AbstractBlock, Thread):
             dust_message = DustMessage(self.publish_topic, 0, eebl.SerializeToString())
             self.publish(self.publish_topic, dust_message)
             logger.info("Published message on " + self.publish_topic)
-            sleep(1)
+            sleep(0.1)
         while(True):
             eebl = EEBL()
-            eebl.location.lat_value = 51.22
-            eebl.location.lon_value = 4.40
+            eebl.location.lat_value = 51.28
+            eebl.location.lon_value = 4.42
             eebl.speed = 50
             eebl.type = 2
 
 
             dust_message = DustMessage(self.publish_topic, 0, eebl.SerializeToString())
             self.publish(self.publish_topic, dust_message)
-            sleep(5)
+            sleep(0.1)
 
             eebl = EEBL()
-            eebl.location.lat_value = 51.22
-            eebl.location.lon_value = 4.40
+            eebl.location.lat_value = 51.28
+            eebl.location.lon_value = 4.42
             eebl.speed = 50
-            eebl.type = 0
+            eebl.type = 2
 
             dust_message = DustMessage(self.publish_topic, 0, eebl.SerializeToString())
             self.publish(self.publish_topic, dust_message)
 
-            sleep(5)
+            sleep(0.1)
 
