@@ -11,12 +11,14 @@
     <!-- socketio -->
     <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
     <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
+    <link rel="stylesheet" href = {{ url_for('static', filename='css/base.css') }}/>
+
     {% block includes %} {% endblock %}
 
 
 
 </head>
-<body class="bg-light">
+<body class="bg-light wrapper">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-1">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -48,5 +50,10 @@
     </nav>
 
     {% block content %}{%  endblock %}
+    <footer class="footer text-center">
+                    <img class="img-responsive footer-img" src={{ url_for('static', filename='img/idlab.jpg') }} alt="">
+                    <img class="img-responsive footer-img" src={{ url_for('static', filename='img/imec.png') }} alt="">
+                    <img class="img-responsive footer-img" src={{ url_for('static', filename='img/ua.jpeg') }} alt="">
+    </footer>
 </body>
 </html>
