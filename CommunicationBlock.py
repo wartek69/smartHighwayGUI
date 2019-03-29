@@ -89,7 +89,7 @@ class CommunicationBlock(AbstractBlock):
                 seconds=self.extern_timeout_value) and self.textern == False:
             self.textern = True
             self.socketio.emit('eebl_extern', {'timeout': 'true'})
-            #extern timeout used on index page to update squares
+            # extern timeout used on index page to update squares
             self.socketio.emit('extern', {'timeout': 'true'})
         if self.gps_timeout < datetime.now() - timedelta(seconds=self.gps_timeout_value) and self.tgps == False:
             self.tgps = True
@@ -127,7 +127,7 @@ class CommunicationBlock(AbstractBlock):
             text = "Intern: NaN"
             if eebl.type == EEBL_Type.Value("OK"):
                 text = "Intern: Ok"
-                self.socketio.emit('eebl_intern', {'info': text})
+                self.socketio.emit('eebl_intern_info', {'info': text})
                 self.socketio.emit('intern', {'type': 'OK',
                                               'timeout': 'false'})
 
@@ -135,21 +135,30 @@ class CommunicationBlock(AbstractBlock):
                 text = "Intern: OBJECT_DETECTED at {0:.4f}, {1:.4f} at speed {2:.2f}".format(eebl.location.lat_value,
                                                                                              eebl.location.lon_value,
                                                                                              eebl.speed)
-                self.socketio.emit('eebl_intern_det', {'eebl_lat': eebl.location.lat_value,
-                                                       'eebl_lon': eebl.location.lon_value,
-                                                       'speed': eebl.speed,
-                                                       'timeout': 'false'})
+                self.socketio.emit('eebl_intern', {'eebl_lat': eebl.location.lat_value,
+                                                   'eebl_lon': eebl.location.lon_value,
+                                                   'speed': eebl.speed,
+                                                   'type': 'OBJECT',
+                                                   'timeout': 'false'})
                 self.socketio.emit('intern', {'type': 'OBJECT_DETECTED',
                                               'timeout': 'false'})
 
             if eebl.type == EEBL_Type.Value("SENSOR_FAILURE"):
                 text = "Intern: SENSOR FAILURE"
-                self.socketio.emit('eebl_intern', {'info': text})
+                self.socketio.emit('eebl_intern', {'eebl_lat': eebl.location.lat_value,
+                                                   'eebl_lon': eebl.location.lon_value,
+                                                   'speed': eebl.speed,
+                                                   'type': 'SENSOR!',
+                                                   'timeout': 'false'})
                 self.socketio.emit('intern', {'type': 'SENSOR_FAILURE',
                                               'timeout': 'false'})
             if eebl.type == EEBL_Type.Value("UNKNOWN"):
                 text = "Intern: UNKNOWN"
-                self.socketio.emit('eebl_intern', {'info': text})
+                self.socketio.emit('eebl_intern', {'eebl_lat': eebl.location.lat_value,
+                                                   'eebl_lon': eebl.location.lon_value,
+                                                   'speed': eebl.speed,
+                                                   'type': 'UNKNOWN',
+                                                   'timeout': 'false'})
                 self.socketio.emit('intern', {'type': 'UNKNOWN',
                                               'timeout': 'false'})
 
@@ -183,16 +192,16 @@ class CommunicationBlock(AbstractBlock):
                                                    'timeout': 'false'})
             if eebl.type == EEBL_Type.Value("OK"):
                 self.socketio.emit('eebl_extern_info', {'eebl_lat': eebl.location.lat_value,
-                                                   'eebl_lon': eebl.location.lon_value,
-                                                   'speed': eebl.speed,
-                                                   'type': 'OK',
-                                                   'timeout': 'false'})
+                                                        'eebl_lon': eebl.location.lon_value,
+                                                        'speed': eebl.speed,
+                                                        'type': 'OK',
+                                                        'timeout': 'false'})
 
             if eebl.type == EEBL_Type.Value("SENSOR_FAILURE"):
                 self.socketio.emit('eebl_extern', {'eebl_lat': eebl.location.lat_value,
                                                    'eebl_lon': eebl.location.lon_value,
                                                    'speed': eebl.speed,
-                                                   'type': 'SENSOR_FAILURE',
+                                                   'type': 'SENSOR!',
                                                    'timeout': 'false'})
 
             logger.debug(text)

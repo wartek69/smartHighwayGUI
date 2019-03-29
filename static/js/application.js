@@ -134,7 +134,7 @@ $(document).ready(function () {
 
     });
 
-    socket.on('eebl_intern_det', function (msg) {
+    socket.on('eebl_intern', function (msg) {
         if (intern_breaking === false) {
             intern_breaking = true;
             audio_intern.play();
@@ -143,22 +143,23 @@ $(document).ready(function () {
                 .bindPopup('\nlon: ' + msg.eebl_lon + ' \nlat: ' + msg.eebl_lat + '\nspeed: ' + msg.speed);
             intern_marker.setZIndexOffset(100);
         }
-        console.log("Received eebl_intern_det");
-        info_string = '<p>eebl_lat: ' + msg.eebl_lat.toString() + '</p>';
+        console.log("Received eebl_intern");
+        info_string = '<h3>Intern event:<small>' + msg.type.toString() + '</small></h3>';
+        info_string = info_string + '<p>eebl_lat: ' + msg.eebl_lat.toString() + '</p>';
         info_string = info_string + '<p>eebl_longitude: ' + msg.eebl_lon.toString() + '</p>';
         info_string = info_string + '<p>eebl_speed: ' + msg.speed.toString() + '</p>';
         $('#eeblintern').html(info_string);
     });
 
-    socket.on('eebl_intern', function (msg) {
+    socket.on('eebl_intern_info', function (msg) {
         intern_breaking = false;
         //remove red car from the map
         setTimeout(function () {
             map.removeLayer(intern_marker);
         }, redCar_timeout);
 
-        console.log("Received eebl_intern");
-        info_string = '<p>' + msg.info + '</p>';
+        console.log("Received eebl_intern_info");
+        info_string = '<h3>Intern event</h3><p>' + msg.info + '</p>';
         $('#eeblintern').html(info_string);
     });
 

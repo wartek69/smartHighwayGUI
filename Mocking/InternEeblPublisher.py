@@ -50,7 +50,7 @@ class InternEeblPublisher(AbstractBlock, Thread):
             eebl.location.lat_value = 51.28
             eebl.location.lon_value = 4.42
             eebl.speed = 50
-            eebl.type = 2
+            eebl.type = 0
 
 
             dust_message = DustMessage(self.publish_topic, 0, eebl.SerializeToString())
@@ -61,7 +61,7 @@ class InternEeblPublisher(AbstractBlock, Thread):
             eebl.location.lat_value = 51.28
             eebl.location.lon_value = 4.42
             eebl.speed = 50
-            eebl.type = 2
+            eebl.type = 0
 
             dust_message = DustMessage(self.publish_topic, 0, eebl.SerializeToString())
             self.publish(self.publish_topic, dust_message)
