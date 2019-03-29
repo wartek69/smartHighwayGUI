@@ -102,8 +102,8 @@ $(document).ready(function () {
                 extern_breaking = true;
                 audio_extern.play();
             }
-
-            info_string = '<p>eebl_lat: ' + msg.eebl_lat.toString() + '</p>';
+            info_string = '<h3>Extern event:<small>' + msg.type.toString() + '</small></h3>';
+            info_string = info_string + '<p>eebl_lat: ' + msg.eebl_lat.toString() + '</p>';
             info_string = info_string + '<p>eebl_longitude: ' + msg.eebl_lon.toString() + '</p>'
             info_string = info_string + '<p>eebl_speed: ' + msg.speed.toString() + '</p>'
             var eebl_marker = L.marker([msg.eebl_lat, msg.eebl_lon], {icon: stopIcon}).addTo(map)
@@ -111,13 +111,27 @@ $(document).ready(function () {
             setTimeout(function () {
                 map.removeLayer(eebl_marker);
             }, stopicon_timeout);
-
         } else {
             console.log('eebl_extern timeout');
             extern_breaking = false;
-            info_string = '<p>Extern: OK </p>';
+            info_string = '<h3>Extern event</h3><p>Extern: OK </p>';
         }
         $('#eeblextern').html(info_string);
+    });
+
+    socket.on('eebl_extern_info', function (msg) {
+        //update without sound or images
+        if (msg.timeout === "false") {
+            console.log("Received eebl_extern_info");
+            info_string = '<h3>Extern event:<small>' + msg.type.toString() + '</small></h3>';
+            info_string = info_string + '<p>eebl_lat: ' + msg.eebl_lat.toString() + '</p>';
+            info_string = info_string + '<p>eebl_longitude: ' + msg.eebl_lon.toString() + '</p>'
+            info_string = info_string + '<p>eebl_speed: ' + msg.speed.toString() + '</p>'
+        } else {
+            info_string = '<h3>Extern event</h3><p>Extern: OK </p>';
+        }
+        $('#eeblextern').html(info_string);
+
     });
 
     socket.on('eebl_intern_det', function (msg) {
@@ -140,8 +154,8 @@ $(document).ready(function () {
         intern_breaking = false;
         //remove red car from the map
         setTimeout(function () {
-                map.removeLayer(intern_marker);
-            }, redCar_timeout);
+            map.removeLayer(intern_marker);
+        }, redCar_timeout);
 
         console.log("Received eebl_intern");
         info_string = '<p>' + msg.info + '</p>';

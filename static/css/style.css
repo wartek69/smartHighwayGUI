@@ -28,7 +28,7 @@ body {
     padding-top: 2rem;
 }
 #eeblextern {
-     min-height: 110px;
+     min-height: 146px;
  }
 #eeblintern {
     min-height: 110px;
@@ -42,7 +42,6 @@ td {
     border-radius: 25px;
 }
 
-/* On screens that are 992px or less, set the background color to blue */
 @media screen and (max-width: 760px) {
   .square {
       height: calc(50vh - 60px - 35px);
@@ -58,4 +57,8 @@ td {
 
 .wrapper {
     height: calc(100vh - 56px - 30px);
+}
+
+small {
+    font-size: 0.7em;
 }

@@ -168,6 +168,7 @@ class CommunicationBlock(AbstractBlock):
                 self.socketio.emit('eebl_extern', {'eebl_lat': eebl.location.lat_value,
                                                    'eebl_lon': eebl.location.lon_value,
                                                    'speed': eebl.speed,
+                                                   'type': 'OBJECT',
                                                    'timeout': 'false'})
                 self.socketio.emit('extern', {'type': 'OBJECT_DETECTED',
                                               'timeout': 'false'});
@@ -175,6 +176,24 @@ class CommunicationBlock(AbstractBlock):
                 text = "UNKNOWN"
                 self.socketio.emit('extern', {'type': 'UNKNOWN',
                                               'timeout': 'false'});
+                self.socketio.emit('eebl_extern', {'eebl_lat': eebl.location.lat_value,
+                                                   'eebl_lon': eebl.location.lon_value,
+                                                   'speed': eebl.speed,
+                                                   'type': 'UNKNOWN',
+                                                   'timeout': 'false'})
+            if eebl.type == EEBL_Type.Value("OK"):
+                self.socketio.emit('eebl_extern_info', {'eebl_lat': eebl.location.lat_value,
+                                                   'eebl_lon': eebl.location.lon_value,
+                                                   'speed': eebl.speed,
+                                                   'type': 'OK',
+                                                   'timeout': 'false'})
+
+            if eebl.type == EEBL_Type.Value("SENSOR_FAILURE"):
+                self.socketio.emit('eebl_extern', {'eebl_lat': eebl.location.lat_value,
+                                                   'eebl_lon': eebl.location.lon_value,
+                                                   'speed': eebl.speed,
+                                                   'type': 'SENSOR_FAILURE',
+                                                   'timeout': 'false'})
 
             logger.debug(text)
 
