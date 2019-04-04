@@ -196,6 +196,8 @@ class CommunicationBlock(AbstractBlock):
                                                         'speed': eebl.speed,
                                                         'type': 'OK',
                                                         'timeout': 'false'})
+                self.socketio.emit('extern', {'type': 'OK',
+                                              'timeout': 'false'});
 
             if eebl.type == EEBL_Type.Value("SENSOR_FAILURE"):
                 self.socketio.emit('eebl_extern', {'eebl_lat': eebl.location.lat_value,
@@ -203,6 +205,8 @@ class CommunicationBlock(AbstractBlock):
                                                    'speed': eebl.speed,
                                                    'type': 'SENSOR!',
                                                    'timeout': 'false'})
+                self.socketio.emit('extern', {'type': 'SENSOR_FAILURE',
+                                              'timeout': 'false'});
 
             logger.debug(text)
 

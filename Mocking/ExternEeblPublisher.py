@@ -51,7 +51,7 @@ class ExternEeblPublisher(AbstractBlock, Thread):
             eebl.location.lat_value = 51.22
             eebl.location.lon_value = 4.40
             eebl.speed = 50
-            eebl.type = 1
+            eebl.type = 3
 
 
             dust_message = DustMessage(self.publish_topic, 0, eebl.SerializeToString())
@@ -62,17 +62,17 @@ class ExternEeblPublisher(AbstractBlock, Thread):
             eebl.location.lat_value = 51.22
             eebl.location.lon_value = 4.40
             eebl.speed = 50
-            eebl.type = 1
+            eebl.type = 0
 
             dust_message = DustMessage(self.publish_topic, 0, eebl.SerializeToString())
             self.publish(self.publish_topic, dust_message)
-            sleep(2)
+            sleep(5)
 
             eebl = EEBL()
             eebl.location.lat_value = 51.22
             eebl.location.lon_value = 4.40
             eebl.speed = 50
-            eebl.type = 1
+            eebl.type = 3
 
             dust_message = DustMessage(self.publish_topic, 0, eebl.SerializeToString())
             self.publish(self.publish_topic, dust_message)
